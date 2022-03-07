@@ -38,3 +38,5 @@ class piece()
 class specific_piece(piece)
     function for checking if movement s valid given (start position, end position)
     
+the determne rvalid squars takes all the squares on the board and takes away allt he sqauares that arent valid based on the movement method in the class
+for example in a loop it might check each square to see if that move aas valid

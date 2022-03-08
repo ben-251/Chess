@@ -20,6 +20,9 @@ The Queen:
     either x+-d and y+-d OR x+-d and y constant OR y+-d and x constant
     in other words, if x+-d, y+-f {d and f cant both be 0}
 
+The knight: 
+    if y +- 2, x +- 1
+    if y +- 1, x +- 2
 
 Movement + capturing:
     if destination sqaure is opponent square, delete opponent piece.
@@ -40,3 +43,28 @@ class specific_piece(piece)
     
 the determne rvalid squars takes all the squares on the board and takes away allt he sqauares that arent valid based on the movement method in the class
 for example in a loop it might check each square to see if that move aas valid
+
+#castling
+def castle(king_positon, king/queen):
+    if is_check(king_position) and is_check(king_destination) and is_check(every square in between):
+       raise error because u cant castle into through or out of check
+       
+   castle
+
+#check
+def is_check(king_position):
+    loop through enemy pieces:
+        if piece move(position, king_position) is possible:
+            return True
+    return False
+    
+determine_valid squares AND castling AND check all rely on a function that checks if a move is valid (regardless of whether there is a piece there, just if it should be able to move that way)
+
+
+#IMPORTANT PROBLEM IS THAT CURRENTLY ALL PIECES CAN JUMP
+
+# def is_piece_in_between(start, end):
+    get all valid squares from the first to the last ones
+    loop through them:
+        if a piece is there, return True
+    return False

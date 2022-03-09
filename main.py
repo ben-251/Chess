@@ -70,9 +70,10 @@ def swap():
     elif player1.turn == False and player2.turn == True:
         player2.turn = False
         player1.turn = True
-    else: print
+    else: 
+        raise Exception("Neither player is playing rn????")
 
-def determine_valid_bishop_squares(init_position,all_pieces): #ned to find a way to get all the pieces' positions
+def determine_valid_bishop_squares(init_position,all_pieces): #need to find a way to get all the pieces' positions
     x = 0
     y = 0
     squares = board

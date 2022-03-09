@@ -42,13 +42,14 @@ black_bishop_1 = bishop("black",True,[3,8])
 black_bishop_2 = bishop("black",True,[6,8])
 black_pieces = [white_bishop_1,white_bishop_2]
 
-def get_array(piece_positions,stage): #I can refine this later but for now need to focus   
+def get_array(stage,valid_squares): #I can refine this later but for now need to focus   
     x_values = []
     y_values = []
 
-    for i in piece_positions:
+ 
+    for i in valid_squares:
         x_values.append(i[0])
-    for i in piece_positions:
+    for i in valid_squares:
         y_values.append(i[1])
 
     x_position = int(input(f"enter first value for {stage} position: "))
@@ -77,20 +78,28 @@ def determine_valid_bishop_squares(init_position,all_pieces): #need to find a wa
     x = 0
     y = 0
     squares = board
+    removed_squares = []
+
+    all_positions = []
+    for i in all_pieces:
+        all_positions.append(i.position)
 
     for i in squares:
         delta_x = abs(i[0] - init_position[0])
         delta_y = abs(i[1] - init_position[1])
 
         if delta_x != delta_y:
-            squares.remove(i)
-        
+            #squares.remove(i) #removing squares in the middle of the loop messes up the index, instead store in an array of sqaures to be removed.
+            removed_squares.append(i)
         else:
-            for i in all_pieces:
-                all_piece_positions = i.position
+            # for piece in all_pieces:
+            #     piece.position = i
 
-            if i in all_piece_positions:
-                squares.remove(i)
+            if i in all_positions:
+                removed_squares.append(i)
+        
+    for i in removed_squares:
+        squares.remove(i)
     return squares
 
 def invalid_move(function):
@@ -98,7 +107,11 @@ def invalid_move(function):
     function()
 
 def start(): 
-    start_position = get_array([white_pieces[0].position,white_pieces[1].position],"start")
+    all_positions = []
+    for i in white_pieces:
+        all_positions.append(i.position)
+
+    start_position = get_array("start",all_positions) #get_array("start",all_piecces for colour)
 
     if start_position == white_bishop_1.position:
         chosen_piece = white_bishop_1
@@ -107,7 +120,10 @@ def start():
     
     valid_squares = determine_valid_bishop_squares(chosen_piece.position,white_pieces)
     print(f"the squares your bishop can move to are{valid_squares}.")
-    end_position = get_array(valid_squares,"end")
+
+    end_position = get_array("end",valid_squares)
+
+    cl = chosen_piece.__class__
     if chosen_piece.__class__== bishop:
         chosen_piece.position = bishop.move(start_position,end_position)
         swap()

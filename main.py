@@ -6,9 +6,10 @@ for y in range(8):
 
 
 class player:
-    def __init__(self,turn,side):
+    def __init__(self,turn,side,pieces):
         self.turn = turn
         self.side = side
+        self.pieces = pieces
 
 class piece:
     def __init__(self,side,alive,position):
@@ -31,8 +32,8 @@ class bishop(piece):
             start()
         return end_position
 
-player1 = player(True,"white")
-player2 = player(False, "black")
+player1 = player(True,"white",white_pieces)
+player2 = player(False, "black",black_pieces)
 
 white_bishop_1 = bishop("white",True,[3,1])
 white_bishop_2 = bishop("white",True,[6,1])
@@ -65,12 +66,15 @@ def get_array(stage,valid_squares): #I can refine this later but for now need to
 def swap():
     global player1
     global player2
+    global active_player
     if player1.turn == True and player2.turn == False:
         player2.turn = True
         player1.turn = False
+        active_player = player2
     elif player1.turn == False and player2.turn == True:
         player2.turn = False
         player1.turn = True
+        active_player = player1
     else: 
         raise Exception("Neither player is playing rn????")
 
@@ -106,18 +110,37 @@ def invalid_move(function):
     print("Invalid Move.")
     function()
 
-def start(): 
+def find_piece(position):
+    for i in all_pieces:
+        if position == i.position:
+            return i    
+    return "PieceNotFoundError"
+    
+def moves(): 
+    active_player = player1
+    #while game not over
     all_positions = []
-    for i in white_pieces:
+
+    for i in active_player.pieces:
         all_positions.append(i.position)
 
-    start_position = get_array("start",all_positions) #get_array("start",all_piecces for colour)
+    all_pieces = []
+    for i in white_pieces:
+        all_pieces.append(i)
+    for i in black_pieces:
+        all_pieces.append(i)
 
-    if start_position == white_bishop_1.position:
-        chosen_piece = white_bishop_1
-    else:
-        chosen_piece = white_bishop_2
-    
+    start_position = get_array("start",all_positions) #get_array("start",all_pieces for colour)
+
+    piece_valid = False
+    while piece_valid == False: #see extras.txt "attribution"
+        chosen_piece = find_piece(position)
+        piece_valid = True
+
+        if chosen_piece == "PieceNotFoundError":
+            piece_valid = False
+            print("Try Again.")
+
     valid_squares = determine_valid_bishop_squares(chosen_piece.position,white_pieces)
     print(f"the squares your bishop can move to are{valid_squares}.")
 
@@ -126,6 +149,10 @@ def start():
     cl = chosen_piece.__class__
     if chosen_piece.__class__== bishop:
         chosen_piece.position = bishop.move(start_position,end_position)
-        swap()
         print("The bishop on",start_position,"is now on",chosen_piece.position)
-start()
+    swap()
+    #end of while. returns winner when game ends
+
+def start():
+    winner = moves()
+    print(f"Game over. {winner} won.")

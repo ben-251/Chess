@@ -68,3 +68,18 @@ determine_valid squares AND castling AND check all rely on a function that check
     loop through them:
         if a piece is there, return True
     return False
+
+##attribution:
+
+inspired from Voklen's program:
+
+    password_valid = False
+	while password_valid == False:
+		password = input("Enter your password:\n")
+		password_valid = True
+		if not 65 <= ord(password[0]) <= 90:
+			password_valid = False
+			print("The password must start with a capital letter")
+		if not 35 <= ord(password[-1]) <= 37:
+			password_valid = False
+			print("The password must end with #, $ or %")

@@ -1,10 +1,3 @@
-#define full board
-board = []
-for y in range(8):
-    for x in range(8):
-        board.append([y+1,x+1])
-
-
 class player:
     def __init__(self,turn,side,pieces):
         self.turn = turn
@@ -21,7 +14,7 @@ class bishop(piece):
     def __init__(self,side,alive,position):
        super().__init__(side,alive,position)
 
-    def determine_valid_bishop_squares(init_position,all_pieces):
+    def determine_valid_squares(init_position,all_pieces,board):
         x = 0
         y = 0
         squares = board
@@ -50,24 +43,44 @@ class bishop(piece):
             squares.remove(i)
         return squares
 
-        
+class knight(piece):
+    def __init__(self,side,alive,position):
+       super().__init__(side,alive,position)
 
-white_bishop_1 = bishop("white",True,[3,1])
-white_bishop_2 = bishop("white",True,[6,1])
-white_pieces = [white_bishop_1,white_bishop_2]
+    def determine_valid_squares(init_position,all_pieces,board):
+        x = 0
+        y = 0
+        squares = board
+        removed_squares = []
 
-black_bishop_1 = bishop("black",True,[3,8])
-black_bishop_2 = bishop("black",True,[6,8])
-black_pieces = [white_bishop_1,white_bishop_2]
+        all_positions = []
+        for i in all_pieces:
+            all_positions.append(i.position)
 
-player1 = player(True,"white",white_pieces)
-player2 = player(False, "black",black_pieces)
+        for i in squares:
+            delta_x = abs(i[0] - init_position[0])
+            delta_y = abs(i[1] - init_position[1])
+
+            if delta_x != delta_y:
+                #squares.remove(i) #removing squares in the middle of the loop messes up the index, instead store in an array of sqaures to be removed.
+                removed_squares.append(i)
+            else:
+                # for piece in all_pieces:
+                #     piece.position = i
+
+                if i in all_positions:
+                    removed_squares.append(i)
+            
+                    
+        for i in removed_squares:
+            squares.remove(i)
+        return squares        
+
 
 def get_array(stage,valid_squares): #I can refine this later but for now need to focus   
     x_values = []
     y_values = []
 
- 
     for i in valid_squares:
         x_values.append(i[0])
     for i in valid_squares:
@@ -99,7 +112,6 @@ def swap():
         raise Exception("Neither player is playing rn????")
 
 
-
 def invalid_move(function):
     print("Invalid Move.")
     function()
@@ -111,6 +123,23 @@ def find_piece(active_player,position):
     return "PieceNotFoundError"
 
 def moves(): 
+    #define full board
+    board = []
+    for y in range(8):
+        for x in range(8):
+            board.append([y+1,x+1])
+
+    white_bishop_1 = bishop("white",True,[3,1])
+    white_bishop_2 = bishop("white",True,[6,1])
+    white_pieces = [white_bishop_1,white_bishop_2]
+
+    black_bishop_1 = bishop("black",True,[3,8])
+    black_bishop_2 = bishop("black",True,[6,8])
+    black_pieces = [white_bishop_1,white_bishop_2]
+
+    player1 = player(True,"white",white_pieces)
+    player2 = player(False, "black",black_pieces)
+
     active_player = player1
     #while game not over
     all_positions = []
@@ -134,10 +163,8 @@ def moves():
         if chosen_piece == "PieceNotFoundError":
             piece_valid = False
             print("Try Again.")
-    
-    piece_type = bishop
 
-    valid_squares = bishop.determine_valid_bishop_squares(chosen_piece.position,white_pieces)
+    valid_squares = bishop.determine_valid_squares(chosen_piece.position,white_pieces,board)
     print(f"the squares your bishop can move to are{valid_squares}.")
 
     end_position = get_array("end",valid_squares)

@@ -83,3 +83,7 @@ inspired from Voklen's program:
 		if not 35 <= ord(password[-1]) <= 37:
 			password_valid = False
 			print("The password must end with #, $ or %")
+
+
+need to stop pieces jumpoinng by checking for pieces is_piece_in_between
+gonna work on other pieces movement rules before implementation of movemtn

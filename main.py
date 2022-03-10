@@ -21,19 +21,36 @@ class bishop(piece):
     def __init__(self,side,alive,position):
        super().__init__(side,alive,position)
 
-    def move(start_position,end_position):
-        #check if that position could actually be reached from diagonal movement. 
-        #diagonal movement - plus one on both, or minus one on both, or plus one 
-        #on one and negative on the other
-        delta_x = abs(end_position[0] - start_position[0])
-        delta_y = abs(end_position[1] - start_position[1])
+    def determine_valid_bishop_squares(init_position,all_pieces):
+        x = 0
+        y = 0
+        squares = board
+        removed_squares = []
 
-        if delta_x != delta_y:
-            start()
-        return end_position
+        all_positions = []
+        for i in all_pieces:
+            all_positions.append(i.position)
 
-player1 = player(True,"white",white_pieces)
-player2 = player(False, "black",black_pieces)
+        for i in squares:
+            delta_x = abs(i[0] - init_position[0])
+            delta_y = abs(i[1] - init_position[1])
+
+            if delta_x != delta_y:
+                #squares.remove(i) #removing squares in the middle of the loop messes up the index, instead store in an array of sqaures to be removed.
+                removed_squares.append(i)
+            else:
+                # for piece in all_pieces:
+                #     piece.position = i
+
+                if i in all_positions:
+                    removed_squares.append(i)
+            
+                    
+        for i in removed_squares:
+            squares.remove(i)
+        return squares
+
+        
 
 white_bishop_1 = bishop("white",True,[3,1])
 white_bishop_2 = bishop("white",True,[6,1])
@@ -42,6 +59,9 @@ white_pieces = [white_bishop_1,white_bishop_2]
 black_bishop_1 = bishop("black",True,[3,8])
 black_bishop_2 = bishop("black",True,[6,8])
 black_pieces = [white_bishop_1,white_bishop_2]
+
+player1 = player(True,"white",white_pieces)
+player2 = player(False, "black",black_pieces)
 
 def get_array(stage,valid_squares): #I can refine this later but for now need to focus   
     x_values = []
@@ -78,44 +98,18 @@ def swap():
     else: 
         raise Exception("Neither player is playing rn????")
 
-def determine_valid_bishop_squares(init_position,all_pieces): #need to find a way to get all the pieces' positions
-    x = 0
-    y = 0
-    squares = board
-    removed_squares = []
 
-    all_positions = []
-    for i in all_pieces:
-        all_positions.append(i.position)
-
-    for i in squares:
-        delta_x = abs(i[0] - init_position[0])
-        delta_y = abs(i[1] - init_position[1])
-
-        if delta_x != delta_y:
-            #squares.remove(i) #removing squares in the middle of the loop messes up the index, instead store in an array of sqaures to be removed.
-            removed_squares.append(i)
-        else:
-            # for piece in all_pieces:
-            #     piece.position = i
-
-            if i in all_positions:
-                removed_squares.append(i)
-        
-    for i in removed_squares:
-        squares.remove(i)
-    return squares
 
 def invalid_move(function):
     print("Invalid Move.")
     function()
 
-def find_piece(position):
-    for i in all_pieces:
+def find_piece(active_player,position):
+    for i in active_player.pieces:
         if position == i.position:
             return i    
     return "PieceNotFoundError"
-    
+
 def moves(): 
     active_player = player1
     #while game not over
@@ -134,25 +128,27 @@ def moves():
 
     piece_valid = False
     while piece_valid == False: #see extras.txt "attribution"
-        chosen_piece = find_piece(position)
+        chosen_piece = find_piece(active_player,start_position)
         piece_valid = True
 
         if chosen_piece == "PieceNotFoundError":
             piece_valid = False
             print("Try Again.")
+    
+    piece_type = bishop
 
-    valid_squares = determine_valid_bishop_squares(chosen_piece.position,white_pieces)
+    valid_squares = bishop.determine_valid_bishop_squares(chosen_piece.position,white_pieces)
     print(f"the squares your bishop can move to are{valid_squares}.")
 
     end_position = get_array("end",valid_squares)
 
-    cl = chosen_piece.__class__
-    if chosen_piece.__class__== bishop:
-        chosen_piece.position = bishop.move(start_position,end_position)
-        print("The bishop on",start_position,"is now on",chosen_piece.position)
+    chosen_piece.position = chosen_piece.move(start_position,end_position) #need to make this function, currently doesnt exist
+    print("The bishop on",start_position,"is now on",chosen_piece.position)
     swap()
     #end of while. returns winner when game ends
 
 def start():
     winner = moves()
     print(f"Game over. {winner} won.")
+
+start()

@@ -14,7 +14,7 @@ class bishop(piece):
     def __init__(self,side,alive,position):
        super().__init__(side,alive,position)
 
-    def determine_valid_squares(self,init_position,all_pieces,board):
+    def determine_valid_squares(self,init_position,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
         squares = board
@@ -47,7 +47,7 @@ class knight(piece):
     def __init__(self,side,alive,position):
        super().__init__(side,alive,position)
 
-    def determine_valid_squares(self,init_position,all_pieces,board):
+    def determine_valid_squares(self,init_position,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
         squares = board
@@ -76,7 +76,7 @@ class rook(piece):
     def __init__(self,side,alive,position):
        super().__init__(side,alive,position)
 
-    def determine_valid_squares(self,init_position,all_pieces,board):
+    def determine_valid_squares(self,init_position,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
         squares = board
@@ -105,7 +105,7 @@ class queen(piece):
     def __init__(self,side,alive,position):
        super().__init__(side,alive,position)
 
-    def determine_valid_squares(self,init_position,all_pieces,board):
+    def determine_valid_squares(self,init_position,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
         squares = board
@@ -128,6 +128,55 @@ class queen(piece):
                     
         for i in removed_squares:
             squares.remove(i)
+        return squares     
+
+class pawn(piece):
+    def __init__(self,side,alive,position,first_move):
+        super().__init__(side,alive,position)
+        self.first_move = first_move
+
+    def determine_valid_squares(self,init_position,all_pieces,enemy_pieces,board):
+        '''
+        "all" here indicates the player making the move
+        '''
+        x = 0
+        y = 0
+        squares = board
+        removed_squares = []
+
+        all_positions = []
+        for i in all_pieces:
+            all_positions.append(i.position)
+
+        enemy_positions = []
+        for i in enemy_pieces:
+            enemy_positions.append(i.position)
+
+        for i in squares:
+            delta_x = abs(i[0] - init_position[0])
+            delta_y = i[1] - init_position[1]
+
+            if i in enemy_positions:
+                if not(delta_y == 1 and delta_x == 1):
+                    removed_squares.append(i)
+            else:
+                if self.first_move:
+                    if not(delta_y == 1 and delta_x == 0) and not(delta_y == 2 and delta_x == 0):
+                        if not i in removed_squares:
+                            removed_squares.append(i)
+                else:
+                    if not(delta_y == 1 and delta_x == 0):
+                        if not i in removed_squares:
+                            removed_squares.append(i)
+            
+                if i in all_positions:
+                    if not i in removed_squares:
+                        removed_squares.append(i)
+                               
+        for i in removed_squares:
+            squares.remove(i)
+        
+        
         return squares     
 
 def get_array(stage,valid_squares): #I can refine this later but for now need to focus   
@@ -189,7 +238,8 @@ def moves():
     white_rook_1 = rook("white",True,[1,1])
     white_rook_2 = rook("white",True,[8,1])
     white_queen = queen("white",True,[4,1])
-    white_pieces = [white_bishop_1,white_bishop_2,white_knight_1,white_knight_2,white_rook_1,white_rook_2,white_queen]
+    white_pawn_1 = pawn("white",True,[3,2],True)
+    white_pieces = [white_bishop_1,white_bishop_2,white_knight_1,white_knight_2,white_rook_1,white_rook_2,white_queen,white_pawn_1]
 
     black_bishop_1 = bishop("black",True,[3,8])
     black_bishop_2 = bishop("black",True,[6,8])
@@ -197,12 +247,18 @@ def moves():
     black_knight_2 = knight("black",True,[7,8])
     black_rook_1 = rook("black",True,[1,8])
     black_rook_2 = rook("black",True,[8,8])
-    black_pieces = [black_bishop_1,black_bishop_2,black_knight_1,black_knight_2]
+    black_pawn_1 = pawn("black",True,[1,7],True)
+    black_pawn_2 = pawn("black",True,[2,7],True)
+    black_pawn_3 = pawn("black",True,[3,7],True)
+    black_pawn_4 = pawn("black",True,[4,3],True)
+    black_pawn_5 = pawn("black",True,[5,7],True)
+    black_pieces = [black_bishop_1,black_bishop_2,black_knight_1,black_knight_2,black_pawn_1,black_pawn_2,black_pawn_3,black_pawn_4,black_pawn_5]
 
     player1 = player(True,"white",white_pieces)
     player2 = player(False, "black",black_pieces)
 
     active_player = player1
+    enemy_player = player2
     #while game not over
     all_positions = []
 
@@ -226,7 +282,7 @@ def moves():
             piece_valid = False
             print("Try Again.")
 
-    valid_squares = chosen_piece.determine_valid_squares(chosen_piece.position,white_pieces,board)
+    valid_squares = chosen_piece.determine_valid_squares(chosen_piece.position,active_player.pieces,enemy_player.pieces,board)
     print(f"the squares your piece can move to are{valid_squares}.")
 
     #end_position = get_array("end",valid_squares)

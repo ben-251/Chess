@@ -3,6 +3,23 @@ Rules for movement:
     Cannot do nothing
     Cannot break each piece's Rule
 
+
+How pawns will work:
+
+each pawn looks like this:
+color_pawn_num = pawn("color",True,[x,y],True) #color, alive, position, first_move.
+
+when i get movment working, then ill be able to check like this:
+
+if desired position has piece
+
+
+
+
+
+
+
+
 The bishops movement:
     if x +- d, y +- d 
 

@@ -14,7 +14,7 @@ class bishop(piece):
     def __init__(self,side,alive,position):
        super().__init__(side,alive,position)
 
-    def determine_valid_squares(self,init_position,all_pieces,enemy_pieces,board):
+    def determine_valid_squares(self,init_position,side,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
         squares = board
@@ -43,7 +43,7 @@ class knight(piece):
     def __init__(self,side,alive,position):
        super().__init__(side,alive,position)
 
-    def determine_valid_squares(self,init_position,all_pieces,enemy_pieces,board):
+    def determine_valid_squares(self,init_position,side,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
         squares = board
@@ -72,7 +72,7 @@ class rook(piece):
     def __init__(self,side,alive,position):
        super().__init__(side,alive,position)
 
-    def determine_valid_squares(self,init_position,all_pieces,enemy_pieces,board):
+    def determine_valid_squares(self,init_position,side,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
         squares = board
@@ -101,7 +101,7 @@ class queen(piece):
     def __init__(self,side,alive,position):
        super().__init__(side,alive,position)
 
-    def determine_valid_squares(self,init_position,all_pieces,enemy_pieces,board):
+    def determine_valid_squares(self,init_position,side,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
         squares = board
@@ -132,7 +132,7 @@ class pawn(piece):
         super().__init__(side,alive,position)
         self.first_move = first_move
 
-    def determine_valid_squares(self,init_position,all_pieces,enemy_pieces,board):
+    def determine_valid_squares(self,init_position,side,all_pieces,enemy_pieces,board):
         '''
         "all" here indicates the player making the move
         '''
@@ -151,7 +151,10 @@ class pawn(piece):
 
         for i in squares:
             delta_x = abs(i[0] - init_position[0])
-            delta_y = i[1] - init_position[1]
+            if side == "white":
+                delta_y = i[1] - init_position[1]
+            elif side == "black":
+                delta_y = init_position[1] - i[1]
 
             if i in enemy_positions:
                 if not(delta_y == 1 and delta_x == 1) and not i in removed_squares:
@@ -210,7 +213,7 @@ def move(piece, position, enemy_player):
             break
     piece.position = position
 
-def play():   
+def play():  
     #define full board
     board = []
     for y in range(8):
@@ -233,12 +236,13 @@ def play():
     black_knight_2 = knight("black",True,[7,8])
     black_rook_1 = rook("black",True,[1,8])
     black_rook_2 = rook("black",True,[8,8])
+    black_queen = queen("black",True,[4,8])
     black_pawn_1 = pawn("black",True,[1,7],True)
     black_pawn_2 = pawn("black",True,[2,7],True)
     black_pawn_3 = pawn("black",True,[3,7],True)
     black_pawn_4 = pawn("black",True,[4,3],True)
     black_pawn_5 = pawn("black",True,[5,7],True)
-    black_pieces = [black_rook_1,black_rook_2,black_bishop_1,black_bishop_2,black_knight_1,black_knight_2,black_pawn_1,black_pawn_2,black_pawn_3,black_pawn_4,black_pawn_5]
+    black_pieces = [black_rook_1,black_rook_2,black_bishop_1,black_bishop_2,black_knight_1,black_knight_2,black_queen,black_pawn_1,black_pawn_2,black_pawn_3,black_pawn_4,black_pawn_5]
 
     player1 = player(True,"white",white_pieces,"player1")
     player2 = player(False, "black",black_pieces,"player2")
@@ -273,7 +277,7 @@ def play():
                 piece_valid = False
                 print("Try Again. NO piece here.")
 
-        valid_squares = chosen_piece.determine_valid_squares(chosen_piece.position,active_player.pieces,enemy_player.pieces,board)
+        valid_squares = chosen_piece.determine_valid_squares(chosen_piece.position,active_player.side, active_player.pieces,enemy_player.pieces,board)
         print(f"the squares your {chosen_piece.__class__.__name__} can move to are{valid_squares}.")
 
         square_valid = False
@@ -303,5 +307,4 @@ def play():
 def start():
     winner,reason = play()
     print(f"Game over. {winner}{reason}")
-
 start()

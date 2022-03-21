@@ -138,7 +138,7 @@ class pawn(piece):
         '''
         x = 0
         y = 0
-        squares = board
+        squares = board.copy()
         removed_squares = []
 
         all_positions = []

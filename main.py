@@ -17,7 +17,7 @@ class bishop(piece):
     def determine_valid_squares(self,init_position,side,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
-        squares = board
+        squares = board.copy()
         removed_squares = []
 
         for i in squares:
@@ -46,7 +46,7 @@ class knight(piece):
     def determine_valid_squares(self,init_position,side,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
-        squares = board
+        squares = board.copy()
         removed_squares = []
 
         all_positions = []
@@ -75,7 +75,7 @@ class rook(piece):
     def determine_valid_squares(self,init_position,side,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
-        squares = board
+        squares = board.copy()
         removed_squares = []
 
         all_positions = []
@@ -104,7 +104,7 @@ class queen(piece):
     def determine_valid_squares(self,init_position,side,all_pieces,enemy_pieces,board):
         x = 0
         y = 0
-        squares = board
+        squares = board.copy()
         removed_squares = []
 
         all_positions = []

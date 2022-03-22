@@ -1,0 +1,106 @@
+Rules for movement:
+    Cannot move onto any already placed pieces (worry about captures later)
+    Cannot do nothing
+    Cannot break each piece's Rule
+
+
+How pawns will work:
+
+each pawn looks like this:
+color_pawn_num = pawn("color",True,[x,y],True) #color, alive, position, first_move.
+
+when i get movment working, then ill be able to check like this:
+
+if desired position has piece
+
+
+
+
+
+
+
+
+The bishops movement:
+    if x +- d, y +- d 
+
+The rooks movement:
+    if x +- d, y +0
+    if y +- d, x +0
+
+The pawns:
+    y+2 or 1 if y is currently 2, if not, only +1 {y cant be +0}
+
+The king:
+    x+-1 or 0,y+-1 or 0 {x and y cant both be +0}
+
+The Queen:
+    either x+-d and y+-d OR x+-d and y constant OR y+-d and x constant
+    in other words, if x+-d, y+-f {d and f cant both be 0}
+
+The knight: 
+    if y +- 2, x +- 1
+    if y +- 1, x +- 2
+
+Movement + capturing:
+    if destination sqaure is opponent square, delete opponent piece.
+
+    pawns:
+        y+2 or 1 if y is currently 2, if not, only +1 {y cant be +0} {cant be opponent square} 
+        ORR
+        y+1, x+-1 ANDD on opponent square
+        
+
+class piece()
+    name, colour,alive(bool),
+
+#when checking if a piece belongs to white or black, just use the property of color 
+
+class specific_piece(piece)
+    function for checking if movement s valid given (start position, end position)
+    
+the determne rvalid squars takes all the squares on the board and takes away allt he sqauares that arent valid based on the movement method in the class
+for example in a loop it might check each square to see if that move aas valid
+
+#castling
+def castle(king_positon, king/queen):
+    if is_check(king_position) and is_check(king_destination) and is_check(every square in between):
+       raise error because u cant castle into through or out of check
+       
+   castle
+
+#check
+def is_check(king_position):
+    loop through enemy pieces:
+        if piece move(position, king_position) is possible:
+            return True
+    return False
+    
+determine_valid squares AND castling AND check all rely on a function that checks if a move is valid (regardless of whether there is a piece there, just if it should be able to move that way)
+
+
+#IMPORTANT PROBLEM IS THAT CURRENTLY ALL PIECES CAN JUMP
+
+# def is_piece_in_between(start, end):
+    get all valid squares from the first to the last ones
+    loop through them:
+        if a piece is there, return True
+    return False
+
+##attribution:
+
+inspired from Voklen's program:
+
+    password_valid = False
+	while password_valid == False:
+		password = input("Enter your password:\n")
+		password_valid = True
+		if not 65 <= ord(password[0]) <= 90:
+			password_valid = False
+			print("The password must start with a capital letter")
+		if not 35 <= ord(password[-1]) <= 37:
+			password_valid = False
+			print("The password must end with #, $ or %")
+
+
+need to stop pieces jumpoinng by checking for pieces is_piece_in_between
+gonna work on other pieces movement rules before implementation of movemtn

@@ -315,7 +315,7 @@ def play():
     black_pawn_1 = pawn("black",True,[1,7],True)
     black_pawn_2 = pawn("black",True,[2,7],True)
     black_pawn_3 = pawn("black",True,[3,7],True)
-    black_pawn_4 = pawn("black",True,[4,3],True)
+    black_pawn_4 = pawn("black",True,[4,7],True)
     black_pawn_5 = pawn("black",True,[5,7],True)
     black_pawn_6 = pawn("black",True,[6,7],True)
     black_pawn_7 = pawn("black",True,[7,7],True)
@@ -367,7 +367,7 @@ def play():
                 
                 for i in removed_squares:
                     valid_squares.remove(i)
-                valid_coords = []
+            valid_coords = []
 
             
             for i in valid_squares:
@@ -392,7 +392,8 @@ def play():
             if end_position not in valid_squares:
                 square_valid = False
                 print("sorry, no squares found here.")
-            if pieces_between(start_position,end_position,active_player,enemy_player):
+
+            if chosen_piece.__class__.__name__ != "knight" and pieces_between(start_position,end_position,active_player,enemy_player):
                 square_valid = False
                 print("Sorry, piece in between.")
         

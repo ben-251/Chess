@@ -525,7 +525,7 @@ def play():
 
                 for i in removed_squares:
                     valid_squares.remove(i)
-            valid_coords = []
+                valid_coords = []
 
             for i in valid_squares:
                 for active_piece in active_player.pieces:

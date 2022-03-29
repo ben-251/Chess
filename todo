@@ -1,15 +1,18 @@
 Now ~ 
-• check function
+• make sure you can't go on squares that put you on check
+• clean all or most functions to only take in active_player, enemy_player, and board if possible
 
 Soon ~ 
+• Checkmates and stalemates
 • castling
 
 LaTeR ~
 • en passant
 • pawn promotions
-• Checkmates and stalemates
+
 
 Completed ~
 • coordinate converter 
 • stop pieces jumping  
 • add kings 
+• check function

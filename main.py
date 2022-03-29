@@ -326,7 +326,7 @@ def get_array(stage, valid_squares):
         coord = ext.convert_to_coordinates(letters)
 
         if coord not in valid_squares:
-            print(f"Try again.\nEnter first value for {stage} position: ")
+            print(f"Try again.\nEnter first value for {stage} position: ") #lucky line identifier
             valid_coord = False
 
     return coord
@@ -381,12 +381,14 @@ def check(active_player, enemy_player, board):
             king_piece = piece
             break
 
+    valid_squares = board.copy()
     for piece in enemy_player.pieces:
-        valid_squares = piece.almost_determine_valid_squares(
-            piece.position, enemy_player, active_player, board) #returns WAY too many values
+        invalid_squares = piece.almost_determine_valid_squares(piece.position, enemy_player, active_player, board) #returns WAY too many values
+        for i in invalid_squares:
+            if i in valid_squares:
+                valid_squares.remove(i)
         if king_piece.position in valid_squares:
-            pass
-            #return True
+            return True
     return False
 
 
@@ -517,7 +519,7 @@ def play():
                 print("Try Again. NO piece here.")
 
             valid_squares = chosen_piece.determine_valid_squares(chosen_piece.position,
-                                                                 active_player.pieces, enemy_player.pieces, board)
+                                                                 active_player, enemy_player, board)
 
             if chosen_piece.__class__.__name__ != "knight":
                 removed_squares = []

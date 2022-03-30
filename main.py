@@ -39,6 +39,8 @@ class bishop(piece):
                 removed_squares.append(i)
             elif i in active_positions and not i in removed_squares:
                     removed_squares.append(i)
+            elif pieces_between(init_position, i, active_player, enemy_player):
+                removed_squares.append(i)
         
         return removed_squares
 
@@ -60,7 +62,8 @@ class bishop(piece):
                 removed_squares.append(i)
 
         for i in removed_squares:
-            squares.remove(i)
+            if i in squares:
+                squares.remove(i)
         return squares
 
 
@@ -105,7 +108,8 @@ class knight(piece):
                 removed_squares.append(i)
 
         for i in removed_squares:
-            squares.remove(i)
+            if i in squares:
+                squares.remove(i)
         return squares
 
 
@@ -152,7 +156,8 @@ class rook(piece):
             #ghost_king_piece.position = original_position
 
         for i in removed_squares:
-            squares.remove(i)
+            if i in squares:
+                squares.remove(i)
         return squares
 
 
@@ -200,7 +205,8 @@ class queen(piece):
                 removed_squares.append(i)
 
         for i in removed_squares:
-            squares.remove(i)
+            if i in squares:
+                squares.remove(i)
         return squares
 
 
@@ -209,11 +215,6 @@ class pawn(piece):
         super().__init__(side, alive, position, first_move)
 
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        '''
-        "all" here indicates the player making the move
-        '''
-        x = 0
-        y = 0
         squares = board.copy()
         removed_squares = []
 
@@ -231,20 +232,22 @@ class pawn(piece):
                 delta_y = i[1] - init_position[1]
             elif self.side == "black":
                 delta_y = init_position[1] - i[1]
+            
 
-            if i in enemy_positions and (not(delta_y == 1 and delta_x == 1) and not i in removed_squares):
-                    removed_squares.append(i)
-            elif self.first_move:
-                    if not(delta_y == 1 and delta_x == 0) and not(delta_y == 2 and delta_x == 0) and not i in removed_squares:
+            if self.first_move:
+                    if not(delta_y == 1 and delta_x == 0) and not(delta_y == 2 and delta_x == 0):
                         removed_squares.append(i)
-            elif not(delta_y == 1 and delta_x == 0) and not i in removed_squares:
+            elif not(delta_y == 1 and delta_x == 0):
                         removed_squares.append(i)
 
-            elif i in active_positions and not i in removed_squares:
+            elif i in active_positions:
                     removed_squares.append(i)
         
             elif pieces_between(init_position, i, active_player, enemy_player):
                 removed_squares.append(i)
+            
+            if i in enemy_positions and (delta_y == 1 and delta_x == 1):
+                removed_squares.remove(i) 
         return removed_squares
 
 
@@ -261,11 +264,12 @@ class pawn(piece):
         for i in squares:
             #ghost_king_piece.position = i
             is_check = check(ghost_active_player, ghost_enemy_player, board) 
-            if is_check and not i in removed_squares:
+            if is_check:
                 removed_squares.append(i)
                 
         for i in removed_squares:
-            squares.remove(i)
+            if i in squares:
+                squares.remove(i)
 
         return squares
 
@@ -523,10 +527,11 @@ def play():
             if chosen_piece.__class__.__name__ != "knight":
                 removed_squares = []
 
+            for i in removed_squares:
+                if i in squares:
+                    squares.remove(i)
 
-                for i in removed_squares:
-                    valid_squares.remove(i)
-                valid_coords = []
+            valid_coords = []
 
             for i in valid_squares:
                 for active_piece in active_player.pieces:
@@ -537,8 +542,7 @@ def play():
                 valid_coords.append(ext.convert_to_letters(i))
 
             if len(valid_squares) > 0:
-                print(
-                    f"Your {chosen_piece.__class__.__name__} can move to are {valid_coords}.")
+                print(f"Your {chosen_piece.__class__.__name__} can move to are {valid_coords}.")
 
             else:
                 print(
@@ -553,10 +557,10 @@ def play():
                 square_valid = False
                 print("sorry, no squares found here.")
 
-            if chosen_piece.__class__.__name__ != "knight" and pieces_between(start_position, end_position, active_player,
-                                                                              enemy_player):
-                square_valid = False
-                print("Sorry, piece in between.")
+            # if chosen_piece.__class__.__name__ != "knight" and pieces_between(start_position, end_position, active_player,
+            #                                                                   enemy_player):
+            #     square_valid = False
+            #     print("Sorry, piece in between.") #shouldn't get called so hopefully redundant
 
         move(chosen_piece, end_position, enemy_player)
         print(f"The {chosen_piece.__class__.__name__} which was on {ext.convert_to_letters(start_position)} is now on {ext.convert_to_letters(chosen_piece.position)}. It should be on {ext.convert_to_letters(end_position)}.\n")

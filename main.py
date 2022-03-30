@@ -538,7 +538,7 @@ def play():
 
             if len(valid_squares) > 0:
                 print(
-                    f"the squares your {chosen_piece.__class__.__name__} can move to are {valid_coords}.")
+                    f"Your {chosen_piece.__class__.__name__} can move to are {valid_coords}.")
 
             else:
                 print(

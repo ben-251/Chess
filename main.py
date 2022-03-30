@@ -114,8 +114,6 @@ class rook(piece):
         super().__init__(side, alive, position, first_move)
 
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        x = 0
-        y = 0
         squares = board.copy()
         removed_squares = []
 
@@ -135,6 +133,7 @@ class rook(piece):
             elif pieces_between(init_position, i, active_player, enemy_player):
                 removed_squares.append(i)
         return removed_squares
+
     def determine_valid_squares(self, init_position, active_player, enemy_player, board):
         removed_squares = self.almost_determine_valid_squares(init_position, active_player, enemy_player, board)
         ghost_active_player = copy.deepcopy(active_player)
@@ -299,7 +298,7 @@ class king(piece):
 
     def determine_valid_squares(self, init_position, active_player, enemy_player, board):
         removed_squares = self.almost_determine_valid_squares(init_position, active_player, enemy_player, board)
-        # make a substitution piece that doesnt get affectecf by anythiin
+        # make a substitution piece that doesnt get affectecf by anything
         ghost_active_player = copy.deepcopy(active_player)
         ghost_enemy_player = copy.deepcopy(enemy_player)
         # for piece in ghost_active_player.pieces:
@@ -356,7 +355,7 @@ def pieces_between(start, end, player, enemy):
         raise Exception(
             "Error. start position or end position dont have numbers for y??")
 
-    coord = start
+    coord = start.copy()
     coord[0] += sign_x
     coord[1] += sign_y
 
@@ -381,8 +380,8 @@ def check(active_player, enemy_player, board):
             king_piece = piece
             break
 
-    valid_squares = board.copy()
     for piece in enemy_player.pieces:
+        valid_squares = board.copy()
         invalid_squares = piece.almost_determine_valid_squares(piece.position, enemy_player, active_player, board) #returns WAY too many values
         for i in invalid_squares:
             if i in valid_squares:
@@ -431,15 +430,15 @@ def play():
     white_pawn_3 = pawn("white", True, [3, 2], True)
     white_pawn_4 = pawn("white", True, [4, 2], True)
     white_pawn_5 = pawn("white", True, [5, 2], True)
-    white_pawn_6 = pawn("white", True, [6, 2], True)
-    white_pawn_7 = pawn("white", True, [7, 2], True)
+    white_pawn_6 = pawn("white", True, [6, 2], True) #for fools mate
+    white_pawn_7 = pawn("white", True, [7, 2], True) #for fools mate
     white_pawn_8 = pawn("white", True, [8, 2], True)
 
-    white_pieces = [white_bishop_1, white_bishop_2,
-                    white_knight_1, white_knight_2, white_rook_1,
-                    white_rook_2, white_queen, white_king, white_pawn_1,
+    white_pieces = [white_pawn_1,
                     white_pawn_2, white_pawn_3, white_pawn_4, white_pawn_5,
-                    white_pawn_6, white_pawn_7, white_pawn_8]
+                    white_pawn_6, white_pawn_7, white_pawn_8, white_bishop_1, white_bishop_2,
+                    white_knight_1, white_knight_2, white_rook_1,
+                    white_rook_2, white_queen, white_king]
 
     black_bishop_1 = bishop("black", True, [3, 8], True)
     black_bishop_2 = bishop("black", True, [6, 8], True)
@@ -447,13 +446,13 @@ def play():
     black_knight_2 = knight("black", True, [7, 8], True)
     black_rook_1 = rook("black", True, [1, 8], True)
     black_rook_2 = rook("black", True, [8, 8], True)
-    black_queen = queen("black", True, [4, 8], True)
+    black_queen = queen("black", True, [4, 8], True) #for fools mate
     black_king = king("black", True, [5, 8], True)
     black_pawn_1 = pawn("black", True, [1, 7], True)
     black_pawn_2 = pawn("black", True, [2, 7], True)
     black_pawn_3 = pawn("black", True, [3, 7], True)
     black_pawn_4 = pawn("black", True, [4, 7], True)
-    black_pawn_5 = pawn("black", True, [5, 7], True)
+    black_pawn_5 = pawn("black", True, [5, 7], True) #for fools mate
     black_pawn_6 = pawn("black", True, [6, 7], True)
     black_pawn_7 = pawn("black", True, [7, 7], True)
     black_pawn_8 = pawn("black", True, [8, 7], True)

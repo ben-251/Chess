@@ -49,12 +49,6 @@ class bishop(piece):
         ghost_active_player = copy.deepcopy(active_player)
         ghost_enemy_player = copy.deepcopy(enemy_player)
 
-
-        # for piece in ghost_active_player.pieces:
-        #     if piece.__class__.__name__ == "king":
-        #         ghost_king_piece = copy.deepcopy(piece)
-        #         break
-
         ghost_chosen_piece = find_piece(ghost_active_player, init_position)
         squares = board.copy()
         for i in squares:
@@ -239,21 +233,21 @@ class pawn(piece):
             elif self.side == "black":
                 delta_y = init_position[1] - i[1]
             
-            if not i in enemy_positions:
-                if self.first_move:
-                        if not(delta_y == 1 and delta_x == 0) and not(delta_y == 2 and delta_x == 0):
-                            removed_squares.append(i)
-                elif not(delta_y == 1 and delta_x == 0):
-                            removed_squares.append(i)
-    
-                elif i in active_positions:
-                        removed_squares.append(i)
-            
-                elif pieces_between(init_position, i, active_player, enemy_player):
+            if self.first_move:
+                if not(delta_y == 1 and delta_x == 0) and not(delta_y == 2 and delta_x == 0):
                     removed_squares.append(i)
+            elif not(delta_y == 1 and delta_x == 0):
+                        removed_squares.append(i)
+
+            elif i in active_positions:
+                    removed_squares.append(i)
+        
+            elif pieces_between(init_position, i, active_player, enemy_player):
+                removed_squares.append(i)
             
             if i in enemy_positions and (delta_y == 1 and delta_x == 1):
-                removed_squares.remove(i) 
+                if i in removed_squares:
+                    removed_squares.remove(i) 
         return removed_squares
 
 
@@ -395,10 +389,13 @@ def check(active_player, enemy_player, board):
 
     for piece in enemy_player.pieces:
         valid_squares = board.copy()
+        if piece.position == [1,7]:
+            print()
         invalid_squares = piece.almost_determine_valid_squares(piece.position, enemy_player, active_player, board) #returns WAY too many values
         for i in invalid_squares:
             if i in valid_squares:
                 valid_squares.remove(i)
+
         if king_piece.position in valid_squares:
             return True
     return False
@@ -443,8 +440,8 @@ def play():
     white_pawn_3 = pawn("white", True, [3, 2], True)
     white_pawn_4 = pawn("white", True, [4, 2], True)
     white_pawn_5 = pawn("white", True, [5, 2], True)
-    white_pawn_6 = pawn("white", True, [6, 2], True) #for fools mate
-    white_pawn_7 = pawn("white", True, [7, 2], True) #for fools mate
+    white_pawn_6 = pawn("white", True, [6, 2], True)
+    white_pawn_7 = pawn("white", True, [7, 2], True)
     white_pawn_8 = pawn("white", True, [8, 2], True)
 
     white_pieces = [white_pawn_1,
@@ -459,13 +456,13 @@ def play():
     black_knight_2 = knight("black", True, [7, 8], True)
     black_rook_1 = rook("black", True, [1, 8], True)
     black_rook_2 = rook("black", True, [8, 8], True)
-    black_queen = queen("black", True, [4, 8], True) #for fools mate
-    black_king = king("black", True, [5, 8], True)
+    black_queen = queen("black", True, [4, 8], True)
+    black_king = king("black", True, [6, 7], True) #bk
     black_pawn_1 = pawn("black", True, [1, 7], True)
     black_pawn_2 = pawn("black", True, [2, 7], True)
     black_pawn_3 = pawn("black", True, [3, 7], True)
-    black_pawn_4 = pawn("black", True, [4, 7], True)
-    black_pawn_5 = pawn("black", True, [5, 7], True) #for fools mate
+    black_pawn_4 = pawn("black", True, [4, 7], True)#bk
+    black_pawn_5 = pawn("black", True, [5, 7], True) 
     black_pawn_6 = pawn("black", True, [6, 7], True)
     black_pawn_7 = pawn("black", True, [7, 7], True)
     black_pawn_8 = pawn("black", True, [8, 7], True)

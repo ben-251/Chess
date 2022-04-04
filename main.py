@@ -236,14 +236,18 @@ class pawn(piece):
             elif self.side == "black":
                 delta_y = init_position[1] - i[1]
             
-            if self.first_move:
-                if not(delta_y == 1 and delta_x == 0) and not(delta_y == 2 and delta_x == 0):
-                    removed_squares.append(i)
-            elif not(delta_y == 1 and delta_x == 0):
+            if i == [8, 4]:
+                print(end = "")
+
+            if not i in enemy_positions:
+                if self.first_move:
+                    if not(delta_y == 1 and delta_x == 0) and not(delta_y == 2 and delta_x == 0):
                         removed_squares.append(i)
+                elif not(delta_y == 1 and delta_x == 0):
+                    removed_squares.append(i)
 
             elif i in active_positions:
-                    removed_squares.append(i)
+                removed_squares.append(i)
         
             elif pieces_between(init_position, i, active_player, enemy_player):
                 removed_squares.append(i)
@@ -262,7 +266,6 @@ class pawn(piece):
         #     if piece.__class__.__name__ == "king":
         #         ghost_king_piece = copy.deepcopy(piece)
         #         break
-        
         ghost_chosen_piece = find_piece(ghost_active_player, init_position)
         squares = board.copy()
         for i in squares:

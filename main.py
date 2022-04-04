@@ -23,8 +23,6 @@ class bishop(piece):
         super().__init__(side, alive, position, first_move)
 
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        x = 0
-        y = 0
         squares = board.copy()
         removed_squares = []
         active_positions = []
@@ -57,11 +55,11 @@ class bishop(piece):
         for i in removed_squares:
             if i in squares:
                 squares.remove(i)
-                
+
         for i in squares:
             #ghost_king_piece.position = i
             move(ghost_chosen_piece, i, ghost_enemy_player)
-            if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
+            if check(ghost_active_player, ghost_enemy_player, board):
                 removed_squares.append(i)
 
         for i in removed_squares:
@@ -171,8 +169,6 @@ class queen(piece):
         super().__init__(side, alive, position, first_move)
 
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        x = 0
-        y = 0
         squares = board.copy()
         removed_squares = []
 

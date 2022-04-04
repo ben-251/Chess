@@ -1,6 +1,5 @@
 import external as ext
 import copy
-###currently pawns can captre by walking into pieces
 
 class player:
     def __init__(self, turn, side, pieces, name):
@@ -57,7 +56,6 @@ class bishop(piece):
                 squares.remove(i)
 
         for i in squares:
-            #ghost_king_piece.position = i
             move(ghost_chosen_piece, i, ghost_enemy_player)
             if check(ghost_active_player, ghost_enemy_player, board):
                 removed_squares.append(i)
@@ -92,18 +90,12 @@ class knight(piece):
 
     def determine_valid_squares(self, init_position, active_player, enemy_player, board):
         removed_squares = self.almost_determine_valid_squares(init_position, active_player, enemy_player, board)
-
         ghost_active_player = copy.deepcopy(active_player)
         ghost_enemy_player = copy.deepcopy(enemy_player)
-        # for piece in ghost_active_player.pieces:
-        #     if piece.__class__.__name__ == "king":
-        #         ghost_king_piece = copy.deepcopy(piece)
-        #         break
 
         ghost_chosen_piece = find_piece(ghost_active_player, init_position)
         squares = board.copy()
         for i in squares:
-            #ghost_king_piece.position = i
             move(ghost_chosen_piece, i, ghost_enemy_player)
             if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
                 removed_squares.append(i)
@@ -143,20 +135,12 @@ class rook(piece):
         removed_squares = self.almost_determine_valid_squares(init_position, active_player, enemy_player, board)
         ghost_active_player = copy.deepcopy(active_player)
         ghost_enemy_player = copy.deepcopy(enemy_player)
-#        for piece in ghost_active_player.pieces:
-            # if piece.__class__.__name__ == "king":
-            #     ghost_king_piece = copy.deepcopy(piece)
-            #     original_position = piece.position
-            #     break
-
         ghost_chosen_piece = find_piece(ghost_active_player, init_position)
         squares = board.copy()
         for i in squares:
-            #ghost_king_piece.position = i
             move(ghost_chosen_piece, i, ghost_enemy_player)
             if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
                 removed_squares.append(i)
-            #ghost_king_piece.position = original_position
 
         for i in removed_squares:
             if i in squares:
@@ -193,16 +177,10 @@ class queen(piece):
     def determine_valid_squares(self, init_position, active_player, enemy_player, board):
         removed_squares = self.almost_determine_valid_squares(init_position,active_player,enemy_player,board)
         ghost_active_player = copy.deepcopy(active_player)
-        ghost_enemy_player = copy.deepcopy(enemy_player)
-        # for piece in ghost_active_player.pieces:
-        #     if piece.__class__.__name__ == "king":
-        #         ghost_king_piece = copy.deepcopy(piece)
-        #         break
-        
+        ghost_enemy_player = copy.deepcopy(enemy_player)        
         ghost_chosen_piece = find_piece(ghost_active_player, init_position)
         squares = board.copy()
         for i in squares:
-            #ghost_king_piece.position = i
             move(ghost_chosen_piece, i, ghost_enemy_player)
             if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
                 removed_squares.append(i)
@@ -262,14 +240,11 @@ class pawn(piece):
         removed_squares = self.almost_determine_valid_squares(init_position, active_player, enemy_player, board)    
         ghost_active_player = copy.deepcopy(active_player)
         ghost_enemy_player = copy.deepcopy(enemy_player)
-        # for piece in ghost_active_player.pieces:
-        #     if piece.__class__.__name__ == "king":
-        #         ghost_king_piece = copy.deepcopy(piece)
-        #         break
         ghost_chosen_piece = find_piece(ghost_active_player, init_position)
         squares = board.copy()
+
         for i in squares:
-            #ghost_king_piece.position = i
+
             move(ghost_chosen_piece, i, ghost_enemy_player)
             is_check = check(ghost_active_player, ghost_enemy_player, board) 
             if is_check:
@@ -310,17 +285,11 @@ class king(piece):
 
     def determine_valid_squares(self, init_position, active_player, enemy_player, board):
         removed_squares = self.almost_determine_valid_squares(init_position, active_player, enemy_player, board)
-        # make a substitution piece that doesnt get affectecf by anything
         ghost_active_player = copy.deepcopy(active_player)
         ghost_enemy_player = copy.deepcopy(enemy_player)
-        # for piece in ghost_active_player.pieces:
-        #     if piece.__class__.__name__ == "king":
-        #         ghost_king_piece = copy.deepcopy(piece)
-        #         break
         ghost_chosen_piece = find_piece(ghost_active_player, init_position)
         squares = board.copy()
         for i in squares:
-            #ghost_king_piece.position = i
             move(ghost_chosen_piece, i, ghost_enemy_player)
             if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
                 removed_squares.append(i)
@@ -357,7 +326,7 @@ def pieces_between(start, end, player, enemy):
         sign_x = 1
     elif delta_x < 0:
         sign_x = -1
-    elif delta_x == 0:  # doing this instead of else incase it messes up soomething
+    elif delta_x == 0:
         sign_x = 0
     else:
         raise Exception(
@@ -367,7 +336,7 @@ def pieces_between(start, end, player, enemy):
         sign_y = 1
     elif delta_y < 0:
         sign_y = -1
-    elif delta_y == 0:  #doing this instead of else incase it messes up soomething
+    elif delta_y == 0:
         sign_y = 0
     else:
         raise Exception(
@@ -400,7 +369,7 @@ def check(active_player, enemy_player, board):
 
     for piece in enemy_player.pieces:
         valid_squares = board.copy()
-        invalid_squares = piece.almost_determine_valid_squares(piece.position, enemy_player, active_player, board) #returns WAY too many values
+        invalid_squares = piece.almost_determine_valid_squares(piece.position, enemy_player, active_player, board)
         for i in invalid_squares:
             if i in valid_squares:
                 valid_squares.remove(i)
@@ -501,7 +470,6 @@ def play(active_player,enemy_player,player1,player2,board):
     for i in enemy_player.pieces:
         active_positions.append(i.position)
 
-    ######
     chosen_piece,valid_squares,start_position = get_start(active_player,enemy_player,active_positions,enemy_positions,board)
     get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_position)
 
@@ -517,7 +485,6 @@ def play(active_player,enemy_player,player1,player2,board):
     return play(active_player,enemy_player,player1,player2,board)
 
 def start_game():
-    # define full board
     board = []
     for y in range(8):
         for x in range(8):

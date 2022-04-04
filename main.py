@@ -49,8 +49,15 @@ class bishop(piece):
         ghost_active_player = copy.deepcopy(active_player)
         ghost_enemy_player = copy.deepcopy(enemy_player)
 
+        if init_position == [3,8]:
+            print()
         ghost_chosen_piece = find_piece(ghost_active_player, init_position)
         squares = board.copy()
+
+        for i in removed_squares:
+            if i in squares:
+                squares.remove(i)
+                
         for i in squares:
             #ghost_king_piece.position = i
             move(ghost_chosen_piece, i, ghost_enemy_player)
@@ -329,10 +336,15 @@ def get_array(stage, valid_squares):
     while valid_coord == False:
         valid_coord = True
         letters = input(f"enter {stage} position: ")
-        coord = ext.convert_to_coordinates(letters)
-
+        if letters == "back":
+            return letters
+        try:
+            coord = ext.convert_to_coordinates(letters)
+        except:
+            print("Invalid coordinate.")
+            valid_coord = False
+            continue
         if coord not in valid_squares:
-            print(f"Try again.\nEnter first value for {stage} position: ") #lucky line identifier
             valid_coord = False
 
     return coord
@@ -389,8 +401,6 @@ def check(active_player, enemy_player, board):
 
     for piece in enemy_player.pieces:
         valid_squares = board.copy()
-        if piece.position == [1,7]:
-            print()
         invalid_squares = piece.almost_determine_valid_squares(piece.position, enemy_player, active_player, board) #returns WAY too many values
         for i in invalid_squares:
             if i in valid_squares:
@@ -419,8 +429,95 @@ def move(piece, position, enemy_player):
     if piece.first_move == True:
         piece.first_move = False
 
+def get_start(active_player,enemy_player,active_positions,enemy_positions,board):
+    piece_valid = False
+    while piece_valid == False:  # see extras.txt "attribution"
+        start_position = get_array("start", active_positions)
+        if start_position == "back":
+            return get_start(active_player,enemy_player,active_positions,enemy_positions,board)
+        chosen_piece = find_piece(active_player, start_position)
 
-def play():
+        piece_valid = True
+        if chosen_piece == "PieceNotFoundError":
+            piece_valid = False
+            print("Try Again. NO piece here.")
+            continue
+
+        valid_squares = chosen_piece.determine_valid_squares(chosen_piece.position,
+                                                                active_player, enemy_player, board)
+
+        valid_coords = []
+        for i in valid_squares:
+            valid_coords.append(ext.convert_to_letters(i))
+
+        if len(valid_squares) > 0:
+            print(f"Your {chosen_piece.__class__.__name__} can move to are {valid_coords}.")
+        else:
+            print(
+                f"The {chosen_piece.__class__.__name__} you chose cannot move to any squares ")
+            piece_valid = False
+    return chosen_piece,valid_squares,start_position
+
+def get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_position):
+    square_valid = False
+    while square_valid == False:
+        end_position = get_array("end", valid_squares)
+        if end_position == "back":
+            return play(active_player,enemy_player,board)
+        square_valid = True
+        if end_position not in valid_squares:
+            square_valid = False
+            print("sorry, no squares found here.")
+
+    move(chosen_piece, end_position, enemy_player)
+    print(f"The {chosen_piece.__class__.__name__} which was on {ext.convert_to_letters(start_position)} is now on {ext.convert_to_letters(chosen_piece.position)}.\n")
+
+def play(active_player,enemy_player,player1,player2,board):
+    is_check = check(active_player, enemy_player, board)
+    all_moves = []
+
+    for i in active_player.pieces:
+        all_moves.append(i.determine_valid_squares(i.position, active_player, enemy_player, board))
+
+    total_moves = 0
+    for i in all_moves:
+        total_moves += len(i)
+
+    if total_moves == 0:
+        if is_check:
+            return f"{enemy_player.name} won ", "by checkmate."
+        else:
+            return "draw","by stalemate."
+
+
+    if is_check:
+        print("//YOU ARE ON CHECK!!")
+    print(f"{active_player.name} is going now.")
+
+    active_positions = []
+    for i in active_player.pieces:
+        active_positions.append(i.position)
+
+    enemy_positions = []
+    for i in enemy_player.pieces:
+        active_positions.append(i.position)
+
+    ######
+    chosen_piece,valid_squares,start_position = get_start(active_player,enemy_player,active_positions,enemy_positions,board)
+    get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_position)
+
+    if active_player == player1 and enemy_player == player2:
+        active_player = player2
+        enemy_player = player1
+    elif active_player == player2 and enemy_player == player1:
+        active_player = player1
+        enemy_player = player2
+    else:
+        raise Exception("Neither player is playing rn????")
+
+    return play(active_player,enemy_player,player1,player2,board)
+
+def start_game():
     # define full board
     board = []
     for y in range(8):
@@ -457,11 +554,11 @@ def play():
     black_rook_1 = rook("black", True, [1, 8], True)
     black_rook_2 = rook("black", True, [8, 8], True)
     black_queen = queen("black", True, [4, 8], True)
-    black_king = king("black", True, [6, 7], True) #bk
+    black_king = king("black", True, [5, 8], True) 
     black_pawn_1 = pawn("black", True, [1, 7], True)
     black_pawn_2 = pawn("black", True, [2, 7], True)
     black_pawn_3 = pawn("black", True, [3, 7], True)
-    black_pawn_4 = pawn("black", True, [4, 7], True)#bk
+    black_pawn_4 = pawn("black", True, [4, 7], True)
     black_pawn_5 = pawn("black", True, [5, 7], True) 
     black_pawn_6 = pawn("black", True, [6, 7], True)
     black_pawn_7 = pawn("black", True, [7, 7], True)
@@ -476,14 +573,11 @@ def play():
     player1 = player(True, "white", white_pieces, "player1")
     player2 = player(False, "black", black_pieces, "player2")
 
-    #player1.name = input("Enter player1's name: ")
     player1.name = "Player1"
-    #player2.name = input("Enter player2's name: ")
     player2.name = "Player2"
 
     active_player = player1
     enemy_player = player2
-    # while game not over
 
     all_pieces = []
     for i in white_pieces:
@@ -491,90 +585,12 @@ def play():
     for i in black_pieces:
         all_pieces.append(i)
 
-    while True: #the game loop
-        is_check = check(active_player, enemy_player, board)
-        all_moves = []
-        for i in active_player.pieces:
-            all_moves.append(i.determine_valid_squares(i.position, active_player, enemy_player, board))
+    winner,reason = play(active_player,enemy_player,player1,player2,board)
+    return winner,reason
 
-        total_moves = 0
-        for i in all_moves:
-            total_moves += len(i)
-
-        if total_moves == 0:
-            if is_check:
-                return f"{enemy_player.name} won ", "by checkmate."
-            else:
-                return "draw","by stalemate."
-
-
-        if is_check:
-            print("//YOU ARE ON CHECK!!")
-        print(f"{active_player.name} is going now.")
-
-        active_positions = []
-        for i in active_player.pieces:
-            active_positions.append(i.position)
-
-        piece_valid = False
-        while piece_valid == False:  # see extras.txt "attribution"
-            # get_array("start",all_pieces for colour)
-            start_position = get_array("start", active_positions)
-            chosen_piece = find_piece(active_player, start_position)
-
-            piece_valid = True
-            if chosen_piece == "PieceNotFoundError":
-                piece_valid = False
-                print("Try Again. NO piece here.")
-
-            valid_squares = chosen_piece.determine_valid_squares(chosen_piece.position,
-                                                                 active_player, enemy_player, board)
-
-            if chosen_piece.__class__.__name__ != "knight":
-                removed_squares = []
-
-            valid_coords = []
-
-            for i in valid_squares:
-                for active_piece in active_player.pieces:
-                    if i == active_piece.position:
-                        removed_squares.append(i)
-
-            for i in valid_squares:
-                valid_coords.append(ext.convert_to_letters(i))
-
-            if len(valid_squares) > 0:
-                print(f"Your {chosen_piece.__class__.__name__} can move to are {valid_coords}.")
-
-            else:
-                print(
-                    f"The {chosen_piece.__class__.__name__} you chose cannot move to any squares ")
-                piece_valid = False
-                
-        square_valid = False
-        while square_valid == False:
-            end_position = get_array("end", valid_squares)
-            square_valid = True
-            if end_position not in valid_squares:
-                square_valid = False
-                print("sorry, no squares found here.")
-
-        move(chosen_piece, end_position, enemy_player)
-        print(f"The {chosen_piece.__class__.__name__} which was on {ext.convert_to_letters(start_position)} is now on {ext.convert_to_letters(chosen_piece.position)}.\n")
-
-        if active_player == player1 and enemy_player == player2:
-            active_player = player2
-            enemy_player = player1
-        elif active_player == player2 and enemy_player == player1:
-            active_player = player1
-            enemy_player = player2
-        else:
-            raise Exception("Neither player is playing rn????")
-
-    return "placeholder won", "by winning."
 
 
 def start():
-    winner, reason = play()
+    winner, reason = start_game()
     print(f"Game over. {winner}{reason}")
 start()

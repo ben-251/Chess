@@ -1,2 +1,2 @@
 # Chess
-It's a program where you enter the position of the piece you want to move, then where to move it to. No castling. NO fancy rules.
+It will have as much functionality as can be achieved; I'll add castling, en passant, pawn promotions, and all that jazz :)

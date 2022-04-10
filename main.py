@@ -322,6 +322,12 @@ def pieces_between(start, end, player, enemy):
     delta_x = end[0] - start[0]
     delta_y = end[1] - start[1]
 
+    # This function only works if the movement is a straight line (vertical, horizontal, or diagonal)
+    # Which is fine because a knight is the only piece that doesn't move like that... 
+    # and also the only piece that can jump over others so this function never needs to be called for it!
+    if not (delta_x == 0 or delta_y == 0 or abs(delta_x) == abs(delta_y)):
+        return False
+
     if delta_x > 0:
         sign_x = 1
     elif delta_x < 0:

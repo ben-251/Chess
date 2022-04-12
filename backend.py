@@ -444,24 +444,6 @@ def find_piece(active_player, position):
             return i
     return "PieceNotFoundError"
 
-
-def castle(direction, active_player, enemy_player):
-    if direction == "long":
-        pass
-    elif direction == "short":
-        pass
-    else:
-        raise Exception("No castle direction")
-    # if white, determine positions of king and rook,
-    #  then check if rook and king there, then chek if first move,
-    #  then check if pieces betwen, then check that there is no check as you 
-    # loop through, putting the king on each square between
-    #if return false never happens, then castle by following the ryles based on yeah
-
-
-
-
-
 ##output##
 
 

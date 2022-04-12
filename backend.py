@@ -3,11 +3,12 @@ import copy
 
 
 class player:
-    def __init__(self, turn, side, pieces, name):
+    def __init__(self, turn, side, pieces, name, back_rank):
         self.turn = turn
         self.side = side
         self.pieces = pieces
         self.name = name
+        self.back_rank = back_rank
 
 
 class piece:
@@ -22,6 +23,7 @@ class piece:
 class bishop(piece):
     def __init__(self, side, alive, position, first_move, symbol):
         super().__init__(side, alive, position, first_move, symbol)
+        self.name = "bishop"
 
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         squares = board.copy()
@@ -72,6 +74,7 @@ class bishop(piece):
 class knight(piece):
     def __init__(self, side, alive, position, first_move, symbol):
         super().__init__(side, alive, position, first_move, symbol)
+        self.name = "knight"
 
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         squares = board.copy()
@@ -113,6 +116,7 @@ class knight(piece):
 class rook(piece):
     def __init__(self, side, alive, position, first_move, symbol):
         super().__init__(side, alive, position, first_move, symbol)
+        self.name = "rook"
 
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         squares = board.copy()
@@ -156,6 +160,7 @@ class rook(piece):
 class queen(piece):
     def __init__(self, side, alive, position, first_move, symbol):
         super().__init__(side, alive, position, first_move, symbol)
+        self.name = "queen"
 
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         squares = board.copy()
@@ -200,6 +205,7 @@ class queen(piece):
 class pawn(piece):
     def __init__(self, side, alive, position, first_move, symbol):
         super().__init__(side, alive, position, first_move, symbol)
+        self.name = "pawn"
 
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         squares = board.copy()
@@ -264,10 +270,10 @@ class pawn(piece):
         return squares
 
 
-class king(piece):
+class king(piece):   
     def __init__(self, side, alive, position, first_move, symbol):
         super().__init__(side, alive, position, first_move, symbol)
-
+        self.name = "king" 
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         x = 0
         y = 0
@@ -353,14 +359,14 @@ black_pieces = [black_rook_1, black_rook_2,
                 black_pawn_2, black_pawn_3, black_pawn_4, black_pawn_5,
                 black_pawn_6, black_pawn_7, black_pawn_8]
 
-player1 = player(True, "white", white_pieces, "player1")
-player2 = player(False, "black", black_pieces, "player2")
+player1 = player(True, "white", white_pieces, "player1",1)
+player2 = player(False, "black", black_pieces, "player2",8)
 
 
 # PROCESSES
 def check(active_player, enemy_player, board):
     for piece in active_player.pieces:
-        if piece.__class__.__name__ == "king":
+        if piece.name == "king":
             king_piece = piece
             break
 
@@ -447,12 +453,25 @@ def find_piece(active_player, position):
 
 def castle(direction, active_player, enemy_player):
     if direction == "long":
-        pass
+        rook_position = [1,active_player.back_rank]
     elif direction == "short":
-        pass
+        rook_position = [8,active_player.back_rank]
     else:
         raise Exception("No castle direction")
-    # if white, determine positions of king and rook,
+    
+    king_position = [5,active_player.back_rank]
+    
+
+    piece =  find_piece(active_player, king_position)
+
+
+    if king_piece.name == "king":
+        king_piece = piece
+    
+    piece = find_piece
+
+    if (find_piece(active_player, king_position).name == "king" ) and (find_piece(active_player, rook_position).name == "rook"):
+        print("placeholder")
     #  then check if rook and king there, then chek if first move,
     #  then check if pieces betwen, then check that there is no check as you 
     # loop through, putting the king on each square between
@@ -494,7 +513,7 @@ def display(active_player, enemy_player, is_check):
 
     if is_check:
         for piece in active_pieces:
-            if piece.__class__.__name__ == "king":
+            if piece.name == "king":
                 king_piece = piece
                 init_symbol = king_piece.symbol
                 king_piece.symbol = "+"

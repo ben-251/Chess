@@ -1,4 +1,4 @@
-import external as ext
+import backend as ext
 import copy
 
 def get_array(stage, valid_squares):
@@ -41,10 +41,10 @@ def get_start(active_player,enemy_player,active_positions,enemy_positions,board)
             valid_coords.append(ext.convert_to_letters(i))
 
         if len(valid_squares) > 0:
-            print(f"Your {chosen_piece.__class__.__name__} can move to are {valid_coords}.")
+            print(f"Your {chosen_piece.name} can move to are {valid_coords}.")
         else:
             print(
-                f"The {chosen_piece.__class__.__name__} you chose cannot move to any squares ")
+                f"The {chosen_piece.name} you chose cannot move to any squares ")
             piece_valid = False
     return chosen_piece,valid_squares,start_position
 
@@ -54,6 +54,10 @@ def get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_po
         end_position = get_array("end", valid_squares)
         if end_position == "back":
             return play(active_player,enemy_player, board)
+        elif end_position == "0-0-0":
+            return castle("short",active_player, enemy_player)
+        elif end_position == "0-0":
+            return castle("short",active_player,enemy_player)
         square_valid = True
         if end_position not in valid_squares:
             square_valid = False
@@ -68,7 +72,7 @@ def get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_po
         enemy_player = ext.player2
     else:
         raise Exception("Neither player is playing rn????")
-    print(f"The {chosen_piece.__class__.__name__} which was on {ext.convert_to_letters(start_position)} is now on {ext.convert_to_letters(chosen_piece.position)}.\n")
+    print(f"The {chosen_piece.name} which was on {ext.convert_to_letters(start_position)} is now on {ext.convert_to_letters(chosen_piece.position)}.\n")
 
 def play(active_player,enemy_player,board):
     is_check = ext.check(active_player, enemy_player, board)

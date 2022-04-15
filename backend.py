@@ -293,7 +293,6 @@ class king(piece):
             else:
                 if i in active_positions and not i in removed_squares:
                     removed_squares.append(i)
-
         return removed_squares
 
     def determine_valid_squares(self, init_position, active_player, enemy_player, board):
@@ -303,7 +302,12 @@ class king(piece):
         ghost_enemy_player = copy.deepcopy(enemy_player)
         ghost_chosen_piece = find_piece(ghost_active_player, init_position)
         squares = board.copy()
+        #if they can castle, add that
+ 
         for i in squares:
+            for direction in ("short","long"):
+                if can_castle(direction,ghost_active_player,ghost_enemy_player):
+                    removed_squares.remove(i) #that square should have been removed, if there is an error, its somewhere else
             move(ghost_chosen_piece, i, ghost_enemy_player)
             if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
                 removed_squares.append(i)
@@ -451,7 +455,7 @@ def find_piece(active_player, position):
     return "PieceNotFoundError"
 
 
-def castle(direction, active_player, enemy_player):
+def can_castle(direction, active_player, enemy_player):
     if direction == "long":
         rook_position = [1,active_player.back_rank]
     elif direction == "short":
@@ -463,15 +467,17 @@ def castle(direction, active_player, enemy_player):
     
 
     piece =  find_piece(active_player, king_position)
+    if piece.name != "king":
+        return False
 
+    piece = find_piece(active_player,rook_position)
+    if piece.name != "rook":
+        return False
 
-    if king_piece.name == "king":
-        king_piece = piece
+    if pieces_between(king_position.rook_position,active_player,enemy_player):
+        return False
     
-    piece = find_piece
-
-    if (find_piece(active_player, king_position).name == "king" ) and (find_piece(active_player, rook_position).name == "rook"):
-        print("placeholder")
+    return True
     #  then check if rook and king there, then chek if first move,
     #  then check if pieces betwen, then check that there is no check as you 
     # loop through, putting the king on each square between

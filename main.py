@@ -1,4 +1,5 @@
-import external as ext
+import backend as ext
+import output as out
 import copy
 
 def get_array(stage, valid_squares):
@@ -9,7 +10,7 @@ def get_array(stage, valid_squares):
         if letters == "back":
             return letters
         try:
-            coord = ext.convert_to_coordinates(letters)
+            coord = out.convert_to_coordinates(letters)
         except:
             print("Invalid coordinate.")
             valid_coord = False
@@ -38,7 +39,7 @@ def get_start(active_player,enemy_player,active_positions,enemy_positions,board)
 
         valid_coords = []
         for i in valid_squares:
-            valid_coords.append(ext.convert_to_letters(i))
+            valid_coords.append(out.convert_to_letters(i))
 
         if len(valid_squares) > 0:
             print(f"Your {chosen_piece.__class__.__name__} can move to are {valid_coords}.")
@@ -68,12 +69,12 @@ def get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_po
         enemy_player = ext.player2
     else:
         raise Exception("Neither player is playing rn????")
-    print(f"The {chosen_piece.__class__.__name__} which was on {ext.convert_to_letters(start_position)} is now on {ext.convert_to_letters(chosen_piece.position)}.\n")
+    print(f"The {chosen_piece.__class__.__name__} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
 
 def play(active_player,enemy_player,board):
     is_check = ext.check(active_player, enemy_player, board)
 
-    ext.display(active_player, enemy_player, is_check)
+    out.display(active_player, enemy_player, is_check)
     all_moves = []
 
     for i in active_player.pieces:
@@ -99,10 +100,12 @@ def play(active_player,enemy_player,board):
 
     enemy_positions = []
     for i in enemy_player.pieces:
-        active_positions.append(i.position)
+        enemy_positions.append(i.position)
+    
+    all_positions = enemy_positions.copy()
+    all_positions.extend(active_positions)
 
-    chosen_piece,valid_squares,start_position = get_start(active_player,enemy_player,active_positions,enemy_positions,board)
-   
+    chosen_piece,valid_squares,start_position = get_start(active_player,enemy_player,active_positions,enemy_positions,board)   
     get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_position)
 
     return play(active_player,enemy_player,board)

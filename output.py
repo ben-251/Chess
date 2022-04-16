@@ -1,3 +1,4 @@
+import backend as ext
 def convert_to_letters(coordinates):
     letters = ""
     letters += chr(coordinates[0]+96)
@@ -17,9 +18,6 @@ def convert_to_coordinates(letters):
 def display(active_player, enemy_player, is_check):
     active_pieces = []
     enemy_pieces = []
-
-    king_piece = king("blue", False, [1000, 10000], False, "ben")
-
     for i in active_player.pieces:
         active_pieces.append(i)
     for i in enemy_player.pieces:
@@ -59,10 +57,10 @@ def display(active_player, enemy_player, is_check):
             if is_there:
                 if (x % 2 == 0 and y % 2 == 0) or (x % 2 == 1 and y % 2 == 1):
                     print(
-                        f"[---{find_piece(player_with_piece,[x,y]).symbol}---]", end="")
+                        f"[---{ext.find_piece(player_with_piece,[x,y]).symbol}---]", end="")
                 else:
                     print(
-                        f"[   {find_piece(player_with_piece,[x,y]).symbol}   ]", end="")
+                        f"[   {ext.find_piece(player_with_piece,[x,y]).symbol}   ]", end="")
             else:
                 if (x % 2 == 0 and y % 2 == 0) or (x % 2 == 1 and y % 2 == 1):
                     print("[-------]", end="")

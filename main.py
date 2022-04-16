@@ -5,7 +5,7 @@ import copy
 '''
 never receive user input, instead use a custom game to test the prgoram
 '''
-
+#test commit
 def get_array(stage, valid_squares):
     valid_coord = False
     while valid_coord == False:

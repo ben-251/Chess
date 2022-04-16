@@ -2,6 +2,10 @@ import backend as ext
 import output as out
 import copy
 
+'''
+never receive user input, instead use a custom game to test the prgoram
+'''
+
 def get_array(stage, valid_squares):
     valid_coord = False
     while valid_coord == False:

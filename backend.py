@@ -302,12 +302,8 @@ class king(piece):
         ghost_enemy_player = copy.deepcopy(enemy_player)
         ghost_chosen_piece = find_piece(ghost_active_player, init_position)
         squares = board.copy()
-        #if they can castle, add that
  
         for i in squares:
-            for direction in ("short","long"):
-                if can_castle(direction,ghost_active_player,ghost_enemy_player):
-                    removed_squares.remove(i) #that square should have been removed, if there is an error, its somewhere else
             move(ghost_chosen_piece, i, ghost_enemy_player)
             if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
                 removed_squares.append(i)

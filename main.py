@@ -54,10 +54,6 @@ def get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_po
         end_position = get_array("end", valid_squares)
         if end_position == "back":
             return play(active_player,enemy_player, board)
-        elif end_position == "0-0-0":
-            return castle("short",active_player, enemy_player)
-        elif end_position == "0-0":
-            return castle("short",active_player,enemy_player)
         square_valid = True
         if end_position not in valid_squares:
             square_valid = False

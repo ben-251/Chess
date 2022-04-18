@@ -1,17 +1,17 @@
 import backend as ext
-<<<<<<< HEAD
-=======
 import output as out
->>>>>>> main
 import copy
 
-def get_array(stage, valid_squares):
+def get_array(stage, valid_squares,can_castle):
     valid_coord = False
     while valid_coord == False:
         valid_coord = True
         letters = input(f"enter {stage} position: ")
         if letters == "back":
             return letters
+        if can_castle:
+            if letters == "0-0" or letters == "0-0-0":
+                return letters
         try:
             coord = out.convert_to_coordinates(letters)
         except:
@@ -29,6 +29,8 @@ def get_start(active_player,enemy_player,active_positions,enemy_positions,board)
         start_position = get_array("start", active_positions)
         if start_position == "back":
             return get_start(active_player,enemy_player,active_positions,enemy_positions,board)
+        elif start_position ==  "0-0":
+            return 
         chosen_piece = ext.find_piece(active_player, start_position)
 
         piece_valid = True
@@ -64,19 +66,8 @@ def get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_po
             print("sorry, no squares found here.")
 
     ext.move(chosen_piece, end_position, enemy_player)
-    if active_player == ext.player1 and enemy_player == ext.player2:
-        active_player = ext.player2
-        enemy_player = ext.player1
-    elif active_player == ext.player2 and enemy_player == ext.player1:
-        active_player = ext.player1
-        enemy_player = ext.player2
-    else:
-        raise Exception("Neither player is playing rn????")
-<<<<<<< HEAD
-    print(f"The {chosen_piece.name} which was on {ext.convert_to_letters(start_position)} is now on {ext.convert_to_letters(chosen_piece.position)}.\n")
-=======
-    print(f"The {chosen_piece.__class__.__name__} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
->>>>>>> main
+
+    print(f"The {chosen_piece.name} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
 
 def play(active_player,enemy_player,board):
     is_check = ext.check(active_player, enemy_player, board)
@@ -114,7 +105,15 @@ def play(active_player,enemy_player,board):
 
     chosen_piece,valid_squares,start_position = get_start(active_player,enemy_player,active_positions,enemy_positions,board)   
     get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_position)
-
+    
+    if active_player == ext.player1 and enemy_player == ext.player2:
+        active_player = ext.player2
+        enemy_player = ext.player1
+    elif active_player == ext.player2 and enemy_player == ext.player1:
+        active_player = ext.player1
+        enemy_player = ext.player2
+    else:
+        raise Exception("Neither player is playing rn????")
     return play(active_player,enemy_player,board)
 
 def start_game():

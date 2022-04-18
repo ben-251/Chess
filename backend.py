@@ -448,6 +448,7 @@ def find_piece(active_player, position):
     for i in active_player.pieces:
         if position == i.position:
             return i
+<<<<<<< HEAD
     return "PieceNotFoundError"
 
 
@@ -559,3 +560,6 @@ def display(active_player, enemy_player, is_check):
         print("\n")
 
     return
+=======
+    return "PieceNotFoundError"
+>>>>>>> main

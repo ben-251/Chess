@@ -23,7 +23,7 @@ class piece:
 class bishop(piece):
     def __init__(self, side, alive, position, first_move, symbol):
         super().__init__(side, alive, position, first_move, symbol,name)
-        self.name = "bishop"
+        self.name = "bishop" #need to find a way to make that work
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         squares = board.copy()
         removed_squares = []
@@ -361,7 +361,7 @@ player2 = player(False, "black", black_pieces, "player2")
 # PROCESSES
 def check(active_player, enemy_player, board):
     for piece in active_player.pieces:
-        if piece.__class__.__name__ == "king":
+        if piece.name == "king":
             king_piece = piece
             break
 

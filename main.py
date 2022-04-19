@@ -42,10 +42,10 @@ def get_start(active_player,enemy_player,active_positions,enemy_positions,board)
             valid_coords.append(out.convert_to_letters(i))
 
         if len(valid_squares) > 0:
-            print(f"Your {chosen_piece.__class__.__name__} can move to are {valid_coords}.")
+            print(f"Your {chosen_piece.name} can move to are {valid_coords}.")
         else:
             print(
-                f"The {chosen_piece.__class__.__name__} you chose cannot move to any squares ")
+                f"The {chosen_piece.name} you chose cannot move to any squares ")
             piece_valid = False
     return chosen_piece,valid_squares,start_position
 
@@ -61,15 +61,7 @@ def get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_po
             print("sorry, no squares found here.")
 
     ext.move(chosen_piece, end_position, enemy_player)
-    if active_player == ext.player1 and enemy_player == ext.player2:
-        active_player = ext.player2
-        enemy_player = ext.player1
-    elif active_player == ext.player2 and enemy_player == ext.player1:
-        active_player = ext.player1
-        enemy_player = ext.player2
-    else:
-        raise Exception("Neither player is playing rn????")
-    print(f"The {chosen_piece.__class__.__name__} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
+    
 
 def play(active_player,enemy_player,board):
     is_check = ext.check(active_player, enemy_player, board)
@@ -107,6 +99,16 @@ def play(active_player,enemy_player,board):
 
     chosen_piece,valid_squares,start_position = get_start(active_player,enemy_player,active_positions,enemy_positions,board)   
     get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_position)
+
+    if active_player == ext.player1 and enemy_player == ext.player2:
+        active_player = ext.player2
+        enemy_player = ext.player1
+    elif active_player == ext.player2 and enemy_player == ext.player1:
+        active_player = ext.player1
+        enemy_player = ext.player2
+    else:
+        raise Exception("Neither player is playing rn????")
+    print(f"The {chosen_piece.name} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
 
     return play(active_player,enemy_player,board)
 

@@ -16,6 +16,8 @@ def get_array(stage, valid_squares):
             valid_coord = False
             continue
         if coord not in valid_squares:
+            if stage == "start":
+                print("you don't have a piece on that square")
             valid_coord = False
 
     return coord
@@ -62,11 +64,10 @@ def get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_po
 
     ext.move(chosen_piece, end_position, enemy_player)
     
-
-def play(active_player,enemy_player,board):
-    is_check = ext.check(active_player, enemy_player, board)
-
-    out.display(active_player, enemy_player, is_check)
+def play(active_player,enemy_player,board,is_check):
+    if is_check:
+        print("//YOU ARE ON CHECK!!")
+    print(f"{active_player.name} is going now.")
     all_moves = []
 
     for i in active_player.pieces:
@@ -81,10 +82,6 @@ def play(active_player,enemy_player,board):
             return f"{enemy_player.name} won ", "by checkmate."
         else:
             return "draw","by stalemate."
-
-    if is_check:
-        print("//YOU ARE ON CHECK!!")
-    print(f"{active_player.name} is going now.")
 
     active_positions = []
     for i in active_player.pieces:
@@ -110,7 +107,9 @@ def play(active_player,enemy_player,board):
         raise Exception("Neither player is playing rn????")
     print(f"The {chosen_piece.name} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
 
-    return play(active_player,enemy_player,board)
+    is_check = ext.check(active_player, enemy_player, board)
+    out.display(active_player, enemy_player, is_check)
+    return play(active_player,enemy_player,board,is_check)
 
 def start_game():
     board = []
@@ -129,7 +128,9 @@ def start_game():
     for i in ext.black_pieces:
         all_pieces.append(i)
 
-    winner,reason = play(active_player,enemy_player,board)
+    is_check = ext.check(active_player, enemy_player, board)
+    out.display(active_player, enemy_player, is_check)
+    winner,reason = play(active_player,enemy_player,board, is_check)
     return winner,reason
 
 def start():

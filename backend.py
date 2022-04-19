@@ -22,8 +22,8 @@ class piece:
 
 class bishop(piece):
     def __init__(self, side, alive, position, first_move, symbol):
-        super().__init__(side, alive, position, first_move, symbol,name)
-        self.name = "bishop" #need to find a way to make that work
+        super().__init__(side, alive, position, first_move, symbol,name = "bishop")
+
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         squares = board.copy()
         removed_squares = []
@@ -71,9 +71,9 @@ class bishop(piece):
 
 
 class knight(piece):
-    def __init__(self, side, alive, position, first_move, symbol,name):
-        super().__init__(side, alive, position, first_move, symbol,name)
-        self.name = "knight"
+    def __init__(self, side, alive, position, first_move, symbol):
+        super().__init__(side, alive, position, first_move, symbol,name = "knight")
+
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         squares = board.copy()
         removed_squares = []
@@ -112,9 +112,8 @@ class knight(piece):
 
 
 class rook(piece):
-    def __init__(self, side, alive, position, first_move, symbol,name):
-        super().__init__(side, alive, position, first_move, symbol,name)
-        self.name = "rook"
+    def __init__(self, side, alive, position, first_move, symbol):
+        super().__init__(side, alive, position, first_move, symbol,name = "rook")
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         squares = board.copy()
         removed_squares = []
@@ -155,9 +154,8 @@ class rook(piece):
 
 
 class queen(piece):
-    def __init__(self, side, alive, position, first_move, symbol,name):
-        super().__init__(side, alive, position, first_move, symbol,name)
-        self.name = "queen"
+    def __init__(self, side, alive, position, first_move, symbol):
+        super().__init__(side, alive, position, first_move, symbol,name = "queen")
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         squares = board.copy()
         removed_squares = []
@@ -199,9 +197,8 @@ class queen(piece):
 
 
 class pawn(piece):
-    def __init__(self, side, alive, position, first_move, symbol,name):
-        super().__init__(side, alive, position, first_move, symbol,name)
-        self.name = "pawn"
+    def __init__(self, side, alive, position, first_move, symbol):
+        super().__init__(side, alive, position, first_move, symbol,name="pawn")
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         squares = board.copy()
         removed_squares = []
@@ -266,9 +263,8 @@ class pawn(piece):
 
 
 class king(piece):
-    def __init__(self, side, alive, position, first_move, symbol,name):
-        super().__init__(side, alive, position, first_move, symbol,name)
-        self.name = "king"
+    def __init__(self, side, alive, position, first_move, symbol):
+        super().__init__(side, alive, position, first_move, symbol, name = "king")
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
         x = 0
         y = 0

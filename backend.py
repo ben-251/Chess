@@ -440,3 +440,19 @@ def find_piece(active_player, position):
         if position == i.position:
             return i
     return "PieceNotFoundError"
+
+def get_piece_type(piece_names):
+    print("CONGRATULATIONS!! YOU HAVE PROMOTED A PAWN!!")
+    piece_valid = False
+    while not piece_valid:
+        piece_name = input("enter the type of piece to turn it to").lower()
+        if piece_name not in piece_names:
+            print("piece not a valid piece")
+    #new_piece = <piece_name>(<active_player.side>, True, chosen_piece.position, first_move = False #don't want to accidentally castle for example, "b") #need to redefine symbols so they are 
+    #chosen based on name and color, ill use lower() and upper()
+def pawn_promote_check(active_player,enemy_player,chosen_piece,active_pieces):
+    if chosen_piece.position[1] ==  enemy_player.backrank and chosen_piece.name == "pawn":
+        chosen_piece.alive = False
+        active_player.pieces.remove(chosen_piece)
+    piece_names = ["bishop","knight","king","queen","rook"]
+    piece_type = get_piece_type()

@@ -63,7 +63,7 @@ def get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_po
             print("sorry, no squares found here.")
 
     ext.move(chosen_piece, end_position, enemy_player)
-    
+
 def play(active_player,enemy_player,board,is_check):
     if is_check:
         print("//YOU ARE ON CHECK!!")
@@ -107,6 +107,7 @@ def play(active_player,enemy_player,board,is_check):
         raise Exception("Neither player is playing rn????")
     print(f"The {chosen_piece.name} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
 
+    pawn_promote_check(active_player,chosen_piece,start_position)
     is_check = ext.check(active_player, enemy_player, board)
     out.display(active_player, enemy_player, is_check)
     return play(active_player,enemy_player,board,is_check)

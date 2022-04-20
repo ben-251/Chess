@@ -9,7 +9,21 @@ class player:
         self.pieces = pieces
         self.name = name
 
+class board_class:
+    def __init__(self, squares,end):
+        self.squares = []
+        self.end = end
+        for y in range(end):
+            for x in range(end):
+                self.squares.append([y+1, x+1])
 
+    def resize(new_length):
+        self.squares = []
+        for y in range(new_length):
+            for x in range(new_length):
+                self.squares.append([y+1, x+1])        
+
+board = board_class([],8)
 class piece:
     def __init__(self, side, alive, position, first_move, symbol,name):
         self.side = side
@@ -49,9 +63,6 @@ class bishop(piece):
             init_position, active_player, enemy_player, board)
         ghost_active_player = copy.deepcopy(active_player)
         ghost_enemy_player = copy.deepcopy(enemy_player)
-
-        if init_position == [3, 8]:
-            print()
         ghost_chosen_piece = find_piece(ghost_active_player, init_position)
         squares = board.copy()
 

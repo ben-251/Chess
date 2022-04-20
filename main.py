@@ -71,7 +71,7 @@ def play(active_player,enemy_player,board,is_check):
     all_moves = []
 
     for i in active_player.pieces:
-        all_moves.append(i.determine_valid_squares(i.position, active_player, enemy_player, board))
+        all_moves.append(i.determine_valid_squares(i.position, active_player, enemy_player, ext.board.squares))
 
     total_moves = 0
     for i in all_moves:
@@ -94,8 +94,8 @@ def play(active_player,enemy_player,board,is_check):
     all_positions = enemy_positions.copy()
     all_positions.extend(active_positions)
 
-    chosen_piece,valid_squares,start_position = get_start(active_player,enemy_player,active_positions,enemy_positions,board)   
-    get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_position)
+    chosen_piece,valid_squares,start_position = get_start(active_player,enemy_player,active_positions,enemy_positions,ext.board.squares)   
+    get_end(active_player,enemy_player,chosen_piece,valid_squares,ext.board.squares,start_position)
 
     if active_player == ext.player1 and enemy_player == ext.player2:
         active_player = ext.player2
@@ -107,17 +107,12 @@ def play(active_player,enemy_player,board,is_check):
         raise Exception("Neither player is playing rn????")
     print(f"The {chosen_piece.name} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
 
-    pawn_promote_check(active_player,chosen_piece,start_position)
-    is_check = ext.check(active_player, enemy_player, board)
-    out.display(active_player, enemy_player, is_check)
-    return play(active_player,enemy_player,board,is_check)
+    #ext.pawn_promote_check(active_player,chosen_piece,start_position)
+    is_check = ext.check(active_player, enemy_player, ext.board.squares)
+    out.display(active_player, enemy_player, is_check,ext.board)
+    return play(active_player,enemy_player,ext.board.squares,is_check)
 
 def start_game():
-    board = []
-    for y in range(8):
-        for x in range(8):
-            board.append([y+1, x+1])
-
     ext.player1.name = "Player1"
     ext.player2.name = "Player2"
     active_player = ext.player1
@@ -129,9 +124,9 @@ def start_game():
     for i in ext.black_pieces:
         all_pieces.append(i)
 
-    is_check = ext.check(active_player, enemy_player, board)
-    out.display(active_player, enemy_player, is_check)
-    winner,reason = play(active_player,enemy_player,board, is_check)
+    is_check = ext.check(active_player, enemy_player, ext.board.squares)
+    out.display(active_player, enemy_player, is_check,ext.board)
+    winner,reason = play(active_player,enemy_player, ext.board.squares, is_check)
     return winner,reason
 
 def start():

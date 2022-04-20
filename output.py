@@ -15,7 +15,7 @@ def convert_to_coordinates(letters):
     return coord
 
 
-def display(active_player, enemy_player, is_check):
+def display(active_player, enemy_player, is_check,board):
     active_pieces = []
     enemy_pieces = []
     for i in active_player.pieces:
@@ -38,13 +38,8 @@ def display(active_player, enemy_player, is_check):
     for i in enemy_player.pieces:
         enemy_positions.append(i.position)
 
-    board = []
-    for y in range(8):
-        for x in range(8):
-            board.append([y+1, x+1])
-
-    for y in range(8, 0, -1):
-        for x in range(1, 9):
+    for y in range(board.end, 0, -1):
+        for x in range(1, board.end+1):
             if [x, y] in active_positions:
                 player_with_piece = active_player
                 is_there = True

@@ -1,6 +1,5 @@
 import backend as ext
 import output as out
-import copy
 
 def get_array(stage, valid_squares):
     valid_coord = False
@@ -16,6 +15,7 @@ def get_array(stage, valid_squares):
             valid_coord = False
             continue
         if coord not in valid_squares:
+            print("invalid coordinate")
             valid_coord = False
 
     return coord

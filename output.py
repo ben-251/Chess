@@ -22,13 +22,14 @@ def display(active_player, enemy_player, is_check):
         active_pieces.append(i)
     for i in enemy_player.pieces:
         enemy_pieces.append(i)
-
+    for piece in active_pieces:
+        if piece.name == "king":
+            king_piece = piece
+            init_symbol = king_piece.symbol
     if is_check:
-        for piece in active_pieces:
-            if piece.name == "king":
-                king_piece = piece
-                init_symbol = king_piece.symbol
-                king_piece.symbol = "+"
+        king_piece.symbol = "+"
+    else: 
+        king_piece.symbol = init_symbol
 
     active_positions = []
     enemy_positions = []

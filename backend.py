@@ -23,9 +23,9 @@ class board_class:
         self.squares = []
         self.x = x
         self.y = y
-        for x in range(x):
-            for y in range(y):
-                self.squares.append([x+1, y+1])
+        for x_val in range(x):
+            for y_val in range(y):
+                self.squares.append([x_val+1, y_val+1])
 
     def find_square(desired_square,squares):
         for i in squares:
@@ -302,7 +302,7 @@ class pawn(piece):
 
             move(ghost_chosen_piece, i, ghost_enemy_player)
             is_check = check(ghost_active_player, ghost_enemy_player, board)
-            if is_check:
+            if is_check and not i in removed_squares:
                 removed_squares.append(i)
 
         for i in removed_squares:

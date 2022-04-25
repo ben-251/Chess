@@ -7,6 +7,10 @@ def get_array(stage, valid_squares):
     while valid_coord == False:
         valid_coord = True
         letters = input(f"enter {stage} position: ")
+        if letters == "help":
+            out.help()
+            valid_coord = False
+            continue
         if letters == "back":
             return letters
         try:
@@ -35,7 +39,7 @@ def get_start(active_player,enemy_player,active_positions,enemy_positions,board)
             piece_valid = False
             print("Try Again. NO piece here.")
             continue
-
+        
         valid_squares = chosen_piece.determine_valid_squares(chosen_piece.position,
                                                                 active_player, enemy_player, board)
 
@@ -66,7 +70,7 @@ def get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_po
 
 def play(active_player,enemy_player,board,is_check):
     if is_check:
-        print("//YOU ARE ON CHECK!!")
+        print("\n//YOU ARE ON CHECK!!")
     print(f"\n{active_player.name} is going now.")
     all_moves = []
 
@@ -130,6 +134,7 @@ def start_game():
     return winner,reason
 
 def start():
+    print("enter \"help\" to see the help menu.")
     winner, reason = start_game()
     print(f"Game over. {winner}{reason}")
 start()

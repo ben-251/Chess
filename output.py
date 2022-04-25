@@ -1,3 +1,4 @@
+import spaces as sp
 import backend as ext
 def convert_to_letters(coordinates):
     letters = ""
@@ -23,12 +24,13 @@ def display(active_player, enemy_player, is_check,board):
     for i in enemy_player.pieces:
         enemy_pieces.append(i)
 
+
+    for piece in active_pieces:
+        if piece.name == "king":
+            king_piece = piece
+            init_symbol = king_piece.symbol
     if is_check:
-        for piece in active_pieces:
-            if piece.name == "king":
-                king_piece = piece
-                init_symbol = king_piece.symbol
-                king_piece.symbol = "+"
+        king_piece.symbol = "+"
 
     active_positions = []
     enemy_positions = []
@@ -38,10 +40,18 @@ def display(active_player, enemy_player, is_check,board):
     for i in enemy_player.pieces:
         enemy_positions.append(i.position)
 
-    for i in range(board.x):
+    print("\n |",end = "")
+    for i in range(board.x-1):
+        print(chr(i+97),end = " ")
+    print(chr(board.x+96))
+    
+    print(" ._",end = "")
+    for i in range(board.x-1):
         print("._",end = "")
     print(".")
+
     for y in range(board.y, 0, -1):
+        print(y,end = "")
         for x in range(1, board.x+1):
             if [x, y] in active_positions:
                 player_with_piece = active_player
@@ -63,5 +73,30 @@ def display(active_player, enemy_player, is_check,board):
                 symbol = ext.find_piece(player_with_piece,[x,y]).symbol
             
             print(f"|{symbol}", end="")
-        print("|")    
+        print("|") 
+        
+    print("\n |",end = "")
+    for i in range(board.x):
+        print(chr(i+97),end = " ")
+    king_piece.symbol = init_symbol
     return
+
+def help():
+    pieces = ["pawn","rook","bishop","knight","queen","king"]
+    symbols = ["o","r","b","n","q","k"]
+    help_menu = {
+        "intro": "Welcome to the help menu!\n type play to see how pieces move, controls to see how this program works, and exit to leave",
+        "play": "Pawns move forwards 1 square each move, but can go two squares forwards on their first move.\n They capture diagonally.\n gonna write the rest later.",
+        "controls": sp.display(pieces, symbols )
+    }
+    print(help_menu["intro"])
+    def help_display():
+        choice = input()
+        while choice not in help_menu:
+            if choice == "exit":
+                return
+            choice = input(".")
+        
+        print(help_menu[choice])
+        help_display()
+    help_display()

@@ -38,8 +38,11 @@ def display(active_player, enemy_player, is_check,board):
     for i in enemy_player.pieces:
         enemy_positions.append(i.position)
 
-    for y in range(board.end, 0, -1):
-        for x in range(1, board.end+1):
+    for i in range(board.x):
+        print("._",end = "")
+    print(".")
+    for y in range(board.y, 0, -1):
+        for x in range(1, board.x+1):
             if [x, y] in active_positions:
                 player_with_piece = active_player
                 is_there = True
@@ -49,18 +52,16 @@ def display(active_player, enemy_player, is_check,board):
             else:
                 is_there = False
 
-            if is_there:
-                if (x % 2 == 0 and y % 2 == 0) or (x % 2 == 1 and y % 2 == 1):
-                    print(
-                        f"[---{ext.find_piece(player_with_piece,[x,y]).symbol}---]", end="")
-                else:
-                    print(
-                        f"[   {ext.find_piece(player_with_piece,[x,y]).symbol}   ]", end="")
+            if (x % 2 == 0 and y % 2 == 0) or (x % 2 == 1 and y % 2 == 1):
+                color = "-----"
             else:
-                if (x % 2 == 0 and y % 2 == 0) or (x % 2 == 1 and y % 2 == 1):
-                    print("[-------]", end="")
-                else:
-                    print("[       ]", end="")
-        print("\n")
-
+                color = "     "
+            
+            if not is_there:
+                symbol = color[0]
+            else:
+                symbol = ext.find_piece(player_with_piece,[x,y]).symbol
+            
+            print(f"|{symbol}", end="")
+        print("|")    
     return

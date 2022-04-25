@@ -44,7 +44,7 @@ def get_start(active_player,enemy_player,active_positions,enemy_positions,board)
             valid_coords.append(out.convert_to_letters(i))
 
         if len(valid_squares) > 0:
-            print(f"Your {chosen_piece.name} can move to are {valid_coords}.")
+            print(f"the squares your {chosen_piece.name} can move to are {valid_coords}.")
         else:
             print(
                 f"The {chosen_piece.name} you chose cannot move to any squares ")
@@ -67,7 +67,7 @@ def get_end(active_player,enemy_player,chosen_piece,valid_squares,board,start_po
 def play(active_player,enemy_player,board,is_check):
     if is_check:
         print("//YOU ARE ON CHECK!!")
-    print(f"{active_player.name} is going now.")
+    print(f"\n{active_player.name} is going now.")
     all_moves = []
 
     for i in active_player.pieces:

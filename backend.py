@@ -9,21 +9,60 @@ class player:
         self.pieces = pieces
         self.name = name
 
+class square:
+    def __init__(self,position,symbol,color):
+        self.position = position
+        self.symbol = symbol
+        self.color = color
+    def assign(self,all_players):
+        self.symbol = find_piece(all_players, self.position).symbol
+
+        
 class board_class:
-    def __init__(self, squares,end):
+    def __init__(self,x,y):
         self.squares = []
-        self.end = end
-        for y in range(end):
-            for x in range(end):
-                self.squares.append([y+1, x+1])
+        self.x = x
+        self.y = y
+        for x in range(x):
+            for y in range(y):
+                self.squares.append([x+1, y+1])
 
-    def resize(new_length):
+    def find_square(desired_square,squares):
+        for i in squares:
+            if i.position == desired_square.position:
+                return i 
+        return "SquareNotFound"
+
+    def display(self):
+        count = 1
+        ##first row
+        for square in self.squares:
+            for i in range(self.y):
+                if i == self.y:
+                    print(square.color,end = "|\n")
+                print("|"+square.color,end = "")
+
+            #second row
+            for i in range(self.y):
+                print(square.color[0]+square.symbol+square.color[0])
+        #squares is an array of objects with a syymbol and color
+        # for square in squares:
+        #     #first 
+        #     ##second row
+
+            
+        # for x in range(1,new_length+1):
+        #     for y in (new_length,0,-1):
+        #         print(sqaure.)
+
+    def resize(new_x,new_y):
         self.squares = []
-        for y in range(new_length):
-            for x in range(new_length):
-                self.squares.append([y+1, x+1])        
+        for x in range(new_x):
+            for y in range(new_y):
+                self.squares.append([x+1, y+1])        
 
-board = board_class([],8)
+board = board_class(8,8)
+
 class piece:
     def __init__(self, side, alive, position, first_move, symbol,name):
         self.side = side

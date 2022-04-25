@@ -1,3 +1,18 @@
+rank 8:
+    print 24 "-"s 
+    for each piece, print (color thing)
+    print 24 -s 
+
+
+
+
+
+
+
+
+
+
+
 Rules for movement:
     Cannot move onto any already placed pieces (worry about captures later)
     Cannot do nothing

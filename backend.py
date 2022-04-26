@@ -416,7 +416,7 @@ player1 = player(True, "white", white_pieces, "player1",1)
 player2 = player(False, "black", black_pieces, "player2",8)
 
 
-# PROCESSES
+
 def check(active_player, enemy_player, board):
 	for piece in active_player.pieces:
 		if piece.name == "king":
@@ -435,7 +435,16 @@ def check(active_player, enemy_player, board):
 			return True
 	return False
 
+def castle(direction, active_player, enemy_player):
+	if direction == "short":
+		rook_file = 8
+	elif direction == "long":
+		rook_file = 1
+	king_piece = find_piece(active_player, [5,active_player.back_rank])
+	rook_piece = find_piece(active_player, [rook_file,active_player.back_rank])
 
+	king_piece.position += king_direction
+	rook_piece.position += rook_direction
 def move(piece, position, enemy_player):
 	for enemy_piece in enemy_player.pieces:
 		if position == enemy_piece.position:
@@ -562,6 +571,9 @@ def can_castle(direction, active_player, enemy_player):
 	ghost_active_player = copy.deepcopy(active_player)
 	ghost_enemy_player = copy.deepcopy(enemy_player)
 
+	if check(ghost_active_player, ghost_enemy_player, board.squares):
+		return False
+
 	if direction == "long":
 		rook_position = [1,ghost_active_player.back_rank]
 	elif direction == "short":
@@ -593,12 +605,15 @@ def can_castle(direction, active_player, enemy_player):
 		return False
 	
 	for square in squares_between(king_position, rook_position):
-		if find_piece(ghost_active_player, square) != "PieceNotFoundError":
-			ghost_active_player.pieces.remove(find_piece(ghost_active_player,square))
+		# if find_piece(ghost_active_player, square) != "PieceNotFoundError":
+		# 	ghost_active_player.pieces.remove(find_piece(ghost_active_player,square))
 		move(king_piece,square,ghost_enemy_player)
-		if check(ghost_active_player,ghost_active_player,board):
+		if check(ghost_active_player,ghost_active_player,board.squares):
 			return False
 
+	castle(direction, active_player, enemy_player)
+	if check(ghost_active_player,ghost_enemy_player, board.squares):
+		return False
 	return True
 	#  then check if rook and king there, then chek if first move,
 	#  then check if pieces betwen, then check that there is no check as you 

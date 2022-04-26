@@ -15,9 +15,11 @@ def convert_to_coordinates(letters):
     coord.append(int(letters[1]))
     return coord
 
-def display_squares(piece_name,squares):
+def display_squares(piece_name,squares,can_castle_short,can_castle_long):
     if len(squares) == 1:
         print(f"the square your {piece_name} can move to is {convert_to_letters(squares[0])}.")
+    elif len(squares) == 0:
+        print(f"The {piece_name} you chose cannot move to any squares")
     else:
         print(f"the squares your {piece_name} can move to are ",end = "")
         for i in range(len(squares)):
@@ -31,8 +33,12 @@ def display_squares(piece_name,squares):
                     print(square,end = ", and ")            
             else:
                 print(square,end = ", ")
-           
-    
+        
+    if can_castle_long:
+        print("You can castle long with \"0-0-0.\"")
+    if can_castle_short:
+        print("You can castle short with \"0-0\"")
+
 def display(active_player, enemy_player, is_check,board):
     active_pieces = []
     enemy_pieces = []

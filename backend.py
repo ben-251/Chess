@@ -385,8 +385,8 @@ white_pawn_8 = pawn("white", True, [8, 2], True, "o")
 
 white_pieces = [white_pawn_1,
 				white_pawn_2, white_pawn_3, white_pawn_4, white_pawn_5,
-				white_pawn_6, white_pawn_7, white_pawn_8, white_bishop_1, white_bishop_2,
-				white_knight_1, white_knight_2, white_rook_1,
+				white_pawn_6, white_pawn_7, white_pawn_8, white_bishop_1, 
+				white_knight_1, white_rook_1,
 				white_rook_2, white_queen, white_king]
 
 black_bishop_1 = bishop("black", True, [3, 8], True, "B")
@@ -449,7 +449,7 @@ def castle(direction, active_player, enemy_player):
 
 	king_piece.position[0] += king_direction
 	rook_piece.position[0] += rook_direction
-	return "Castled"
+	return "castled"
 
 
 def move(piece, position, enemy_player):
@@ -462,7 +462,7 @@ def move(piece, position, enemy_player):
 	piece.position = position
 	if piece.first_move == True:
 		piece.first_move = False
-
+	return "moved"
 
 def pieces_between(start, end, player, enemy):
 	delta_x = end[0] - start[0]
@@ -579,7 +579,6 @@ def can_castle(direction, active_player, enemy_player):
 	ghost_enemy_player = copy.deepcopy(enemy_player)
 
 	if check(ghost_active_player, ghost_enemy_player, board.squares):
-		print("cuz you're on that square")
 		return False
 
 	if direction == "long":
@@ -594,44 +593,32 @@ def can_castle(direction, active_player, enemy_player):
 	king_piece =  copy.deepcopy(find_piece(ghost_active_player, king_position))
 	if king_piece == "PieceNotFoundError":
 		find_piece(ghost_active_player,king_position)
-		print("no king on that square")
 		return False
 	if king_piece.name != "king":
-		print("cuz not a king")
 		return False
 	if not king_piece.first_move:
-		print("cuz not king first move")
 		return False
 
 	rook_piece = find_piece(ghost_active_player,rook_position)
 	if rook_piece == "PieceNotFoundError":
-		print("cuz no piece there")
 		return False
 	if rook_piece.name != "rook":
-		print("not a rook")
 		return False
 	if not rook_piece.first_move:
-		print("not the rooks first move")
 		return False
 
 	if pieces_between(king_position,rook_position,ghost_active_player,ghost_enemy_player):
-		print("there is a piece between")
 		return False
 	
 	for square in squares_between(king_position, rook_position):
 		move(king_piece,square,ghost_enemy_player)
-		if check(ghost_active_player,ghost_active_player,board.squares):
-			print("cant castle thru check")
+		if check(ghost_active_player,ghost_enemy_player,board.squares):
 			return False
 
 	castle(direction, ghost_active_player, ghost_enemy_player)
 	if check(ghost_active_player,ghost_enemy_player, board.squares):
-		print("cant castle into check")
 		king_piece.position = [5,ghost_active_player.back_rank]
 		king_piece.first_move = True
 		return False
 
 	return True
-	#  then check if rook and king there, then chek if first move,
-	#  then check if pieces betwen, then check that there is no check as you 
-	# loop through, putting the king on each square between

@@ -15,6 +15,7 @@ def get_array(stage, valid_squares):
 		accepted_words = ["back","0-0","0-0-0"]
 		if letters in accepted_words:
 			return letters
+
 		try:
 			coord = out.convert_to_coordinates(letters)
 		except:
@@ -29,7 +30,7 @@ def get_array(stage, valid_squares):
 	return coord
 
 
-def get_start(active_player, enemy_player, active_positions, enemy_positions, board):
+def get_start(active_player, enemy_player, active_positions, enemy_positions, board,can_castle_short,can_castle_long):
 	piece_valid = False
 	while piece_valid == False:  # see extras.txt "attribution"
 		start_position = get_array("start", active_positions)
@@ -50,11 +51,9 @@ def get_start(active_player, enemy_player, active_positions, enemy_positions, bo
 		for i in valid_squares:
 			valid_coords.append(out.convert_to_letters(i))
 
-		if len(valid_squares) > 0:
-			out.display_squares(chosen_piece.name, valid_squares)
-		else:
-			print(
-				f"The {chosen_piece.name} you chose cannot move to any squares ")
+
+		out.display_squares(chosen_piece.name, valid_squares,can_castle_short,can_castle_long)
+		if len(valid_squares) == 0:	
 			piece_valid = False
 	return chosen_piece, valid_squares, start_position
 
@@ -69,18 +68,21 @@ def get_end(active_player, enemy_player, chosen_piece, valid_squares, board, sta
 		elif end_position == "0-0-0":
 			if ext.can_castle("long", active_player, enemy_player):
 				return ext.castle("long",active_player, enemy_player)
-			else: print("you cant castle long right now")
+			else: 
+				print("you cant castle long right now")
 		
 		elif end_position == "0-0":
 			if ext.can_castle("short", active_player, enemy_player):
 				return ext.castle("short",active_player, enemy_player)
+			else: 
+				print("you can't castle that way right now")
 
 		square_valid = True
 		if end_position not in valid_squares:
 			square_valid = False
 			print("sorry, no squares found here.")
 
-	ext.move(chosen_piece, end_position, enemy_player)
+	return ext.move(chosen_piece, end_position, enemy_player)
 
 
 def play(active_player, enemy_player, board, is_check):
@@ -89,15 +91,8 @@ def play(active_player, enemy_player, board, is_check):
 	can_castle_short = ext.can_castle("short", active_player, enemy_player)
 	can_castle_long = ext.can_castle("long", active_player, enemy_player)
 	
-	if can_castle_long and can_castle_short:
-		print("You can castle both ways.")
-	elif can_castle_short:
-		print("You can castle short.")
-	elif can_castle_long:
-		print("You can castle long.")
-	else:
-		print("You can't castle on this move.")
-
+	# if not can_castle_long and not can_castle_short: 
+	# 	print("You can't castle on this move.")
 	print(f"{active_player.name} is going now.")
 	all_moves = []
 
@@ -127,8 +122,8 @@ def play(active_player, enemy_player, board, is_check):
 	all_positions.extend(active_positions)
 
 	chosen_piece, valid_squares, start_position = get_start(
-		active_player, enemy_player, active_positions, enemy_positions, ext.board.squares)
-	get_end(active_player, enemy_player, chosen_piece,
+		active_player, enemy_player, active_positions, enemy_positions, ext.board.squares,can_castle_long,can_castle_long)
+	action = get_end(active_player, enemy_player, chosen_piece,
 			valid_squares, ext.board.squares, start_position,is_check)
 
 	if active_player == ext.player1 and enemy_player == ext.player2:
@@ -139,8 +134,11 @@ def play(active_player, enemy_player, board, is_check):
 		enemy_player = ext.player2
 	else:
 		raise Exception("Neither player is playing rn????")
-	print(f"The {chosen_piece.name} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
-
+	
+	if action == "moved":
+		print(f"The {chosen_piece.name} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
+	elif action == "castled":
+		print("Successfully Castled.")
 	# ext.pawn_promote_check(active_player,chosen_piece,start_position)
 	is_check = ext.check(active_player, enemy_player, ext.board.squares)
 	out.display(active_player, enemy_player, is_check, ext.board)

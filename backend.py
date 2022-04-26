@@ -3,353 +3,367 @@ import copy
 
 
 class player:
-    def __init__(self, turn, side, pieces, name):
-        self.turn = turn
-        self.side = side
-        self.pieces = pieces
-        self.name = name
+	def __init__(self, turn, side, pieces, name, back_rank):
+		self.turn = turn
+		self.side = side
+		self.pieces = pieces
+		self.name = name
+		self.back_rank = back_rank
 
 class square:
-    def __init__(self,position,symbol,color):
-        self.position = position
-        self.symbol = symbol
-        self.color = color
-    def assign(self,all_players):
-        self.symbol = find_piece(all_players, self.position).symbol
+	def __init__(self,position,symbol,color):
+		self.position = position
+		self.symbol = symbol
+		self.color = color
+	def assign(self,all_players):
+		self.symbol = find_piece(all_players, self.position).symbol
 
-        
+		
 class board_class:
-    def __init__(self,x,y):
-        self.squares = []
-        self.x = x
-        self.y = y
-        for x_val in range(x):
-            for y_val in range(y):
-                self.squares.append([x_val+1, y_val+1])
+	def __init__(self,x,y):
+		self.squares = []
+		self.x = x
+		self.y = y
+		for x_val in range(x):
+			for y_val in range(y):
+				self.squares.append([x_val+1, y_val+1])
 
-    def find_square(desired_square,squares):
-        for i in squares:
-            if i.position == desired_square.position:
-                return i 
-        return "SquareNotFound"
+	def find_square(desired_square,squares):
+		for i in squares:
+			if i.position == desired_square.position:
+				return i 
+		return "SquareNotFound"
 
-    def display(self):
-        count = 1
-        ##first row
-        for square in self.squares:
-            for i in range(self.y):
-                if i == self.y:
-                    print(square.color,end = "|\n")
-                print("|"+square.color,end = "")
+	def display(self):
+		count = 1
+		##first row
+		for square in self.squares:
+			for i in range(self.y):
+				if i == self.y:
+					print(square.color,end = "|\n")
+				print("|"+square.color,end = "")
 
-            #second row
-            for i in range(self.y):
-                print(square.color[0]+square.symbol+square.color[0])
-        #squares is an array of objects with a syymbol and color
-        # for square in squares:
-        #     #first 
-        #     ##second row
+			#second row
+			for i in range(self.y):
+				print(square.color[0]+square.symbol+square.color[0])
+		#squares is an array of objects with a syymbol and color
+		# for square in squares:
+		#     #first 
+		#     ##second row
 
-            
-        # for x in range(1,new_length+1):
-        #     for y in (new_length,0,-1):
-        #         print(sqaure.)
+			
+		# for x in range(1,new_length+1):
+		#     for y in (new_length,0,-1):
+		#         print(sqaure.)
 
-    def resize(new_x,new_y):
-        self.squares = []
-        for x in range(new_x):
-            for y in range(new_y):
-                self.squares.append([x+1, y+1])        
+	def resize(new_x,new_y):
+		self.squares = []
+		for x in range(new_x):
+			for y in range(new_y):
+				self.squares.append([x+1, y+1])        
 
 board = board_class(8,8)
 
 class piece:
-    def __init__(self, side, alive, position, first_move, symbol,name):
-        self.side = side
-        self.alive = alive
-        self.position = position
-        self.first_move = first_move
-        self.symbol = symbol
-        self.name = name
+	def __init__(self, side, alive, position, first_move, symbol):
+		self.side = side
+		self.alive = alive
+		self.position = position
+		self.first_move = first_move
+		self.symbol = symbol
 
 
 class bishop(piece):
-    def __init__(self, side, alive, position, first_move, symbol):
-        super().__init__(side, alive, position, first_move, symbol,name = "bishop")
+	def __init__(self, side, alive, position, first_move, symbol):
+		super().__init__(side, alive, position, first_move, symbol)
+		self.name = "bishop"
 
-    def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        squares = board.copy()
-        removed_squares = []
-        active_positions = []
-        for i in active_player.pieces:
-            active_positions.append(i.position)
+	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		squares = board.copy()
+		removed_squares = []
+		active_positions = []
+		for i in active_player.pieces:
+			active_positions.append(i.position)
 
-        for i in squares:
-            delta_x = abs(i[0] - init_position[0])
-            delta_y = abs(i[1] - init_position[1])
+		for i in squares:
+			delta_x = abs(i[0] - init_position[0])
+			delta_y = abs(i[1] - init_position[1])
 
-            if delta_x != delta_y and not i in removed_squares:
-                removed_squares.append(i)
-            elif i in active_positions and not i in removed_squares:
-                removed_squares.append(i)
-            elif pieces_between(init_position, i, active_player, enemy_player):
-                removed_squares.append(i)
+			if delta_x != delta_y and not i in removed_squares:
+				removed_squares.append(i)
+			elif i in active_positions and not i in removed_squares:
+				removed_squares.append(i)
+			elif pieces_between(init_position, i, active_player, enemy_player):
+				removed_squares.append(i)
 
-        return removed_squares
+		return removed_squares
 
-    def determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        removed_squares = self.almost_determine_valid_squares(
-            init_position, active_player, enemy_player, board)
-        ghost_active_player = copy.deepcopy(active_player)
-        ghost_enemy_player = copy.deepcopy(enemy_player)
-        ghost_chosen_piece = find_piece(ghost_active_player, init_position)
-        squares = board.copy()
+	def determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		removed_squares = self.almost_determine_valid_squares(
+			init_position, active_player, enemy_player, board)
+		ghost_active_player = copy.deepcopy(active_player)
+		ghost_enemy_player = copy.deepcopy(enemy_player)
 
-        for i in removed_squares:
-            if i in squares:
-                squares.remove(i)
+		if init_position == [3, 8]:
+			print()
+		ghost_chosen_piece = find_piece(ghost_active_player, init_position)
+		squares = board.copy()
 
-        for i in squares:
-            move(ghost_chosen_piece, i, ghost_enemy_player)
-            if check(ghost_active_player, ghost_enemy_player, board):
-                removed_squares.append(i)
+		for i in removed_squares:
+			if i in squares:
+				squares.remove(i)
 
-        for i in removed_squares:
-            if i in squares:
-                squares.remove(i)
-        return squares
+		for i in squares:
+			move(ghost_chosen_piece, i, ghost_enemy_player)
+			if check(ghost_active_player, ghost_enemy_player, board):
+				removed_squares.append(i)
+
+		for i in removed_squares:
+			if i in squares:
+				squares.remove(i)
+		return squares
 
 
 class knight(piece):
-    def __init__(self, side, alive, position, first_move, symbol):
-        super().__init__(side, alive, position, first_move, symbol,name = "knight")
+	def __init__(self, side, alive, position, first_move, symbol):
+		super().__init__(side, alive, position, first_move, symbol)
+		self.name = "knight"
 
-    def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        squares = board.copy()
-        removed_squares = []
+	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		squares = board.copy()
+		removed_squares = []
 
-        active_positions = []
-        for i in active_player.pieces:
-            active_positions.append(i.position)
+		active_positions = []
+		for i in active_player.pieces:
+			active_positions.append(i.position)
 
-        for i in squares:
-            delta_x = abs(i[0] - init_position[0])
-            delta_y = abs(i[1] - init_position[1])
+		for i in squares:
+			delta_x = abs(i[0] - init_position[0])
+			delta_y = abs(i[1] - init_position[1])
 
-            if (not(delta_x == 1 and delta_y == 2)) and (not(delta_x == 2 and delta_y == 1)) and not i in removed_squares:
-                removed_squares.append(i)
-            elif i in active_positions and not i in removed_squares:
-                removed_squares.append(i)
-        return removed_squares
+			if (not(delta_x == 1 and delta_y == 2)) and (not(delta_x == 2 and delta_y == 1)) and not i in removed_squares:
+				removed_squares.append(i)
+			elif i in active_positions and not i in removed_squares:
+				removed_squares.append(i)
+		return removed_squares
 
-    def determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        removed_squares = self.almost_determine_valid_squares(
-            init_position, active_player, enemy_player, board)
-        ghost_active_player = copy.deepcopy(active_player)
-        ghost_enemy_player = copy.deepcopy(enemy_player)
+	def determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		removed_squares = self.almost_determine_valid_squares(
+			init_position, active_player, enemy_player, board)
+		ghost_active_player = copy.deepcopy(active_player)
+		ghost_enemy_player = copy.deepcopy(enemy_player)
 
-        ghost_chosen_piece = find_piece(ghost_active_player, init_position)
-        squares = board.copy()
-        for i in squares:
-            move(ghost_chosen_piece, i, ghost_enemy_player)
-            if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
-                removed_squares.append(i)
+		ghost_chosen_piece = find_piece(ghost_active_player, init_position)
+		squares = board.copy()
+		for i in squares:
+			move(ghost_chosen_piece, i, ghost_enemy_player)
+			if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
+				removed_squares.append(i)
 
-        for i in removed_squares:
-            if i in squares:
-                squares.remove(i)
-        return squares
+		for i in removed_squares:
+			if i in squares:
+				squares.remove(i)
+		return squares
 
 
 class rook(piece):
-    def __init__(self, side, alive, position, first_move, symbol):
-        super().__init__(side, alive, position, first_move, symbol,name = "rook")
-    def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        squares = board.copy()
-        removed_squares = []
+	def __init__(self, side, alive, position, first_move, symbol):
+		super().__init__(side, alive, position, first_move, symbol)
+		self.name = "rook"
 
-        active_positions = []
-        for i in active_player.pieces:
-            active_positions.append(i.position)
+	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		squares = board.copy()
+		removed_squares = []
 
-        for i in squares:
-            delta_x = abs(i[0] - init_position[0])
-            delta_y = abs(i[1] - init_position[1])
+		active_positions = []
+		for i in active_player.pieces:
+			active_positions.append(i.position)
 
-            if (not(delta_x > 0 and delta_y == 0)) and (not(delta_x == 0 and delta_y > 0)) and (not i in removed_squares):
-                removed_squares.append(i)
-            elif i in active_positions:
-                removed_squares.append(i)
+		for i in squares:
+			delta_x = abs(i[0] - init_position[0])
+			delta_y = abs(i[1] - init_position[1])
 
-            elif pieces_between(init_position, i, active_player, enemy_player):
-                removed_squares.append(i)
-        return removed_squares
+			if (not(delta_x > 0 and delta_y == 0)) and (not(delta_x == 0 and delta_y > 0)) and (not i in removed_squares):
+				removed_squares.append(i)
+			elif i in active_positions:
+				removed_squares.append(i)
 
-    def determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        removed_squares = self.almost_determine_valid_squares(
-            init_position, active_player, enemy_player, board)
-        ghost_active_player = copy.deepcopy(active_player)
-        ghost_enemy_player = copy.deepcopy(enemy_player)
-        ghost_chosen_piece = find_piece(ghost_active_player, init_position)
-        squares = board.copy()
-        for i in squares:
-            move(ghost_chosen_piece, i, ghost_enemy_player)
-            if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
-                removed_squares.append(i)
+			elif pieces_between(init_position, i, active_player, enemy_player):
+				removed_squares.append(i)
+		return removed_squares
 
-        for i in removed_squares:
-            if i in squares:
-                squares.remove(i)
-        return squares
+	def determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		removed_squares = self.almost_determine_valid_squares(
+			init_position, active_player, enemy_player, board)
+		ghost_active_player = copy.deepcopy(active_player)
+		ghost_enemy_player = copy.deepcopy(enemy_player)
+		ghost_chosen_piece = find_piece(ghost_active_player, init_position)
+		squares = board.copy()
+		for i in squares:
+			move(ghost_chosen_piece, i, ghost_enemy_player)
+			if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
+				removed_squares.append(i)
+
+		for i in removed_squares:
+			if i in squares:
+				squares.remove(i)
+		return squares
 
 
 class queen(piece):
-    def __init__(self, side, alive, position, first_move, symbol):
-        super().__init__(side, alive, position, first_move, symbol,name = "queen")
-    def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        squares = board.copy()
-        removed_squares = []
+	def __init__(self, side, alive, position, first_move, symbol):
+		super().__init__(side, alive, position, first_move, symbol)
+		self.name = "queen"
 
-        active_positions = []
-        for i in active_player.pieces:
-            active_positions.append(i.position)
+	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		squares = board.copy()
+		removed_squares = []
 
-        for i in squares:
-            delta_x = abs(i[0] - init_position[0])
-            delta_y = abs(i[1] - init_position[1])
+		active_positions = []
+		for i in active_player.pieces:
+			active_positions.append(i.position)
 
-            if (not(delta_x > 0 and delta_y == 0)) and (not(delta_x == 0 and delta_y > 0)) and (delta_x != delta_y):
-                if not i in removed_squares:
-                    removed_squares.append(i)
-            elif i in active_positions and not i in removed_squares:
-                removed_squares.append(i)
+		for i in squares:
+			delta_x = abs(i[0] - init_position[0])
+			delta_y = abs(i[1] - init_position[1])
 
-            elif pieces_between(init_position, i, active_player, enemy_player):
-                removed_squares.append(i)
-        return removed_squares
+			if (not(delta_x > 0 and delta_y == 0)) and (not(delta_x == 0 and delta_y > 0)) and (delta_x != delta_y):
+				if not i in removed_squares:
+					removed_squares.append(i)
+			elif i in active_positions and not i in removed_squares:
+				removed_squares.append(i)
 
-    def determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        removed_squares = self.almost_determine_valid_squares(
-            init_position, active_player, enemy_player, board)
-        ghost_active_player = copy.deepcopy(active_player)
-        ghost_enemy_player = copy.deepcopy(enemy_player)
-        ghost_chosen_piece = find_piece(ghost_active_player, init_position)
-        squares = board.copy()
-        for i in squares:
-            move(ghost_chosen_piece, i, ghost_enemy_player)
-            if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
-                removed_squares.append(i)
+			elif pieces_between(init_position, i, active_player, enemy_player):
+				removed_squares.append(i)
+		return removed_squares
 
-        for i in removed_squares:
-            if i in squares:
-                squares.remove(i)
-        return squares
+	def determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		removed_squares = self.almost_determine_valid_squares(
+			init_position, active_player, enemy_player, board)
+		ghost_active_player = copy.deepcopy(active_player)
+		ghost_enemy_player = copy.deepcopy(enemy_player)
+		ghost_chosen_piece = find_piece(ghost_active_player, init_position)
+		squares = board.copy()
+		for i in squares:
+			move(ghost_chosen_piece, i, ghost_enemy_player)
+			if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
+				removed_squares.append(i)
+
+		for i in removed_squares:
+			if i in squares:
+				squares.remove(i)
+		return squares
 
 
 class pawn(piece):
-    def __init__(self, side, alive, position, first_move, symbol):
-        super().__init__(side, alive, position, first_move, symbol,name="pawn")
-    def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        squares = board.copy()
-        removed_squares = []
+	def __init__(self, side, alive, position, first_move, symbol):
+		super().__init__(side, alive, position, first_move, symbol)
+		self.name = "pawn"
 
-        active_positions = []
-        for i in active_player.pieces:
-            active_positions.append(i.position)
+	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		squares = board.copy()
+		removed_squares = []
 
-        enemy_positions = []
-        for i in enemy_player.pieces:
-            enemy_positions.append(i.position)
+		active_positions = []
+		for i in active_player.pieces:
+			active_positions.append(i.position)
 
-        all_positions = []
-        all_positions.extend(enemy_positions)
-        all_positions.extend(active_positions)
+		enemy_positions = []
+		for i in enemy_player.pieces:
+			enemy_positions.append(i.position)
 
-        for i in squares:
-            delta_x = abs(i[0] - init_position[0])
-            if self.side == "white":
-                delta_y = i[1] - init_position[1]
-            elif self.side == "black":
-                delta_y = init_position[1] - i[1]
+		all_positions = []
+		all_positions.extend(enemy_positions)
+		all_positions.extend(active_positions)
 
-            if not i in enemy_positions:
-                if self.first_move:
-                    if not(delta_y == 1 and delta_x == 0) and not(delta_y == 2 and delta_x == 0):
-                        removed_squares.append(i)
-                elif not(delta_y == 1 and delta_x == 0):
-                    removed_squares.append(i)
+		for i in squares:
+			delta_x = abs(i[0] - init_position[0])
+			if self.side == "white":
+				delta_y = i[1] - init_position[1]
+			elif self.side == "black":
+				delta_y = init_position[1] - i[1]
 
-            if i in all_positions:
-                removed_squares.append(i)
+			if not i in enemy_positions:
+				if self.first_move:
+					if not(delta_y == 1 and delta_x == 0) and not(delta_y == 2 and delta_x == 0):
+						removed_squares.append(i)
+				elif not(delta_y == 1 and delta_x == 0):
+					removed_squares.append(i)
 
-            if pieces_between(init_position, i, active_player, enemy_player):
-                removed_squares.append(i)
+			if i in all_positions:
+				removed_squares.append(i)
 
-            if i in enemy_positions and (delta_y == 1 and delta_x == 1):
-                if i in removed_squares:
-                    removed_squares.remove(i)
-        return removed_squares
+			if pieces_between(init_position, i, active_player, enemy_player):
+				removed_squares.append(i)
 
-    def determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        removed_squares = self.almost_determine_valid_squares(
-            init_position, active_player, enemy_player, board)
-        ghost_active_player = copy.deepcopy(active_player)
-        ghost_enemy_player = copy.deepcopy(enemy_player)
-        ghost_chosen_piece = find_piece(ghost_active_player, init_position)
-        squares = board.copy()
+			if i in enemy_positions and (delta_y == 1 and delta_x == 1):
+				if i in removed_squares:
+					removed_squares.remove(i)
+		return removed_squares
 
-        for i in squares:
+	def determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		removed_squares = self.almost_determine_valid_squares(
+			init_position, active_player, enemy_player, board)
+		ghost_active_player = copy.deepcopy(active_player)
+		ghost_enemy_player = copy.deepcopy(enemy_player)
+		ghost_chosen_piece = find_piece(ghost_active_player, init_position)
+		squares = board.copy()
 
-            move(ghost_chosen_piece, i, ghost_enemy_player)
-            is_check = check(ghost_active_player, ghost_enemy_player, board)
-            if is_check and not i in removed_squares:
-                removed_squares.append(i)
+		for i in squares:
 
-        for i in removed_squares:
-            if i in squares:
-                squares.remove(i)
+			move(ghost_chosen_piece, i, ghost_enemy_player)
+			is_check = check(ghost_active_player, ghost_enemy_player, board)
+			if is_check:
+				removed_squares.append(i)
 
-        return squares
+		for i in removed_squares:
+			if i in squares:
+				squares.remove(i)
+
+		return squares
 
 
-class king(piece):
-    def __init__(self, side, alive, position, first_move, symbol):
-        super().__init__(side, alive, position, first_move, symbol, name = "king")
-    def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        squares = board.copy()
-        removed_squares = []
-        active_positions = []
-        for i in active_player.pieces:
-            active_positions.append(i.position)
+class king(piece):   
+	def __init__(self, side, alive, position, first_move, symbol):
+		super().__init__(side, alive, position, first_move, symbol)
+		self.name = "king" 
+	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		x = 0
+		y = 0
+		squares = board.copy()
+		removed_squares = []
+		active_positions = []
+		for i in active_player.pieces:
+			active_positions.append(i.position)
 
-        for i in squares:
-            delta_x = abs(i[0] - init_position[0])
-            delta_y = abs(i[1] - init_position[1])
+		for i in squares:
+			delta_x = abs(i[0] - init_position[0])
+			delta_y = abs(i[1] - init_position[1])
 
-            if delta_x > 1 or delta_y > 1:
-                if not i in removed_squares:
-                    removed_squares.append(i)
-            else:
-                if i in active_positions and not i in removed_squares:
-                    removed_squares.append(i)
+			if delta_x > 1 or delta_y > 1:
+				if not i in removed_squares:
+					removed_squares.append(i)
+			else:
+				if i in active_positions and not i in removed_squares:
+					removed_squares.append(i)
+		return removed_squares
 
-        return removed_squares
+	def determine_valid_squares(self, init_position, active_player, enemy_player, board):
+		removed_squares = self.almost_determine_valid_squares(
+			init_position, active_player, enemy_player, board)
+		ghost_active_player = copy.deepcopy(active_player)
+		ghost_enemy_player = copy.deepcopy(enemy_player)
+		ghost_chosen_piece = find_piece(ghost_active_player, init_position)
+		squares = board.copy()
+ 
+		for i in squares:
+			move(ghost_chosen_piece, i, ghost_enemy_player)
+			if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
+				removed_squares.append(i)
 
-    def determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        removed_squares = self.almost_determine_valid_squares(
-            init_position, active_player, enemy_player, board)
-        ghost_active_player = copy.deepcopy(active_player)
-        ghost_enemy_player = copy.deepcopy(enemy_player)
-        ghost_chosen_piece = find_piece(ghost_active_player, init_position)
-        squares = board.copy()
-        for i in squares:
-            move(ghost_chosen_piece, i, ghost_enemy_player)
-            if check(ghost_active_player, ghost_enemy_player, board) and not i in removed_squares:
-                removed_squares.append(i)
-
-        for i in removed_squares:
-            squares.remove(i)
-        return squares
+		for i in removed_squares:
+			squares.remove(i)
+		return squares
 
 
 white_bishop_1 = bishop("white", True, [3, 1], True, "b")
@@ -370,10 +384,10 @@ white_pawn_7 = pawn("white", True, [7, 2], True, "o")
 white_pawn_8 = pawn("white", True, [8, 2], True, "o")
 
 white_pieces = [white_pawn_1,
-                white_pawn_2, white_pawn_3, white_pawn_4, white_pawn_5,
-                white_pawn_6, white_pawn_7, white_pawn_8, white_bishop_1, white_bishop_2,
-                white_knight_1, white_knight_2, white_rook_1,
-                white_rook_2, white_queen, white_king]
+				white_pawn_2, white_pawn_3, white_pawn_4, white_pawn_5,
+				white_pawn_6, white_pawn_7, white_pawn_8, white_bishop_1, white_bishop_2,
+				white_knight_1, white_knight_2, white_rook_1,
+				white_rook_2, white_queen, white_king]
 
 black_bishop_1 = bishop("black", True, [3, 8], True, "B")
 black_bishop_2 = bishop("black", True, [6, 8], True, "B")
@@ -393,114 +407,199 @@ black_pawn_7 = pawn("black", True, [7, 7], True, "O")
 black_pawn_8 = pawn("black", True, [8, 7], True, "O")
 
 black_pieces = [black_rook_1, black_rook_2,
-                black_bishop_1, black_bishop_2, black_knight_1,
-                black_knight_2, black_queen, black_king, black_pawn_1,
-                black_pawn_2, black_pawn_3, black_pawn_4, black_pawn_5,
-                black_pawn_6, black_pawn_7, black_pawn_8]
+				black_bishop_1, black_bishop_2, black_knight_1,
+				black_knight_2, black_queen, black_king, black_pawn_1,
+				black_pawn_2, black_pawn_3, black_pawn_4, black_pawn_5,
+				black_pawn_6, black_pawn_7, black_pawn_8]
 
-player1 = player(True, "white", white_pieces, "player1")
-player2 = player(False, "black", black_pieces, "player2")
+player1 = player(True, "white", white_pieces, "player1",1)
+player2 = player(False, "black", black_pieces, "player2",8)
 
 
 # PROCESSES
 def check(active_player, enemy_player, board):
-    for piece in active_player.pieces:
-        if piece.name == "king":
-            king_piece = piece
-            break
+	for piece in active_player.pieces:
+		if piece.name == "king":
+			king_piece = piece
+			break
 
-    for piece in enemy_player.pieces:
-        valid_squares = board.copy()
-        invalid_squares = piece.almost_determine_valid_squares(
-            piece.position, enemy_player, active_player, board)
-        for i in invalid_squares:
-            if i in valid_squares:
-                valid_squares.remove(i)
+	for piece in enemy_player.pieces:
+		valid_squares = board.copy()
+		invalid_squares = piece.almost_determine_valid_squares(
+			piece.position, enemy_player, active_player, board)
+		for i in invalid_squares:
+			if i in valid_squares:
+				valid_squares.remove(i)
 
-        if king_piece.position in valid_squares:
-            return True
-    return False
+		if king_piece.position in valid_squares:
+			return True
+	return False
 
 
 def move(piece, position, enemy_player):
-    for enemy_piece in enemy_player.pieces:
-        if position == enemy_piece.position:
-            enemy_piece.alive = False
-            enemy_player.pieces.remove(enemy_piece)
-            break
+	for enemy_piece in enemy_player.pieces:
+		if position == enemy_piece.position:
+			enemy_piece.alive = False
+			enemy_player.pieces.remove(enemy_piece)
+			break
 
-    piece.position = position
-    if piece.first_move == True:
-        piece.first_move = False
+	piece.position = position
+	if piece.first_move == True:
+		piece.first_move = False
 
 
 def pieces_between(start, end, player, enemy):
-    delta_x = end[0] - start[0]
-    delta_y = end[1] - start[1]
+	delta_x = end[0] - start[0]
+	delta_y = end[1] - start[1]
 
-    # This function only works if the movement is a straight line (vertical, horizontal, or diagonal)
-    # Which is fine because a knight is the only piece that doesn't move like that...
-    # and also the only piece that can jump over others so this function never needs to be called for it!
-    if not (delta_x == 0 or delta_y == 0 or abs(delta_x) == abs(delta_y)):
-        return False
+	# This function only works if the movement is a straight line (vertical, horizontal, or diagonal)
+	# Which is fine because a knight is the only piece that doesn't move like that...
+	# and also the only piece that can jump over others so this function never needs to be called for it!
+	if not (delta_x == 0 or delta_y == 0 or abs(delta_x) == abs(delta_y)):
+		return False
 
-    if delta_x > 0:
-        sign_x = 1
-    elif delta_x < 0:
-        sign_x = -1
-    elif delta_x == 0:
-        sign_x = 0
-    else:
-        raise Exception(
-            "Error. start position or end position dont have numbers for x??")
+	if delta_x > 0:
+		sign_x = 1
+	elif delta_x < 0:
+		sign_x = -1
+	elif delta_x == 0:
+		sign_x = 0
+	else:
+		raise Exception(
+			"Error. start position or end position dont have numbers for x??")
 
-    if delta_y > 0:
-        sign_y = 1
-    elif delta_y < 0:
-        sign_y = -1
-    elif delta_y == 0:
-        sign_y = 0
-    else:
-        raise Exception(
-            "Error. start position or end position dont have numbers for y??")
+	if delta_y > 0:
+		sign_y = 1
+	elif delta_y < 0:
+		sign_y = -1
+	elif delta_y == 0:
+		sign_y = 0
+	else:
+		raise Exception(
+			"Error. start position or end position dont have numbers for y??")
 
-    coord = start.copy()
-    coord[0] += sign_x
-    coord[1] += sign_y
+	coord = start.copy()
+	coord[0] += sign_x
+	coord[1] += sign_y
 
-    all_positions = []
-    for i in player.pieces:
-        all_positions.append(i.position)
-    for i in enemy.pieces:
-        all_positions.append(i.position)
+	all_positions = []
+	for i in player.pieces:
+		all_positions.append(i.position)
+	for i in enemy.pieces:
+		all_positions.append(i.position)
 
-    while coord != end:
-        if coord in all_positions:
-            return True
-        coord[0] += sign_x
-        coord[1] += sign_y
+	while coord != end:
+		if coord in all_positions:
+			return True
+		coord[0] += sign_x
+		coord[1] += sign_y
 
-    return False
+	return False
 
+def squares_between(start, end):
+	coords = []
+	delta_x = end[0] - start[0]
+	delta_y = end[1] - start[1]
+
+	if not (delta_x == 0 or delta_y == 0 or abs(delta_x) == abs(delta_y)):
+		return False
+
+	if delta_x > 0:
+		sign_x = 1
+	elif delta_x < 0:
+		sign_x = -1
+	elif delta_x == 0:
+		sign_x = 0
+	else:
+		raise Exception(
+			"Error. start position or end position dont have numbers for x??")
+
+	if delta_y > 0:
+		sign_y = 1
+	elif delta_y < 0:
+		sign_y = -1
+	elif delta_y == 0:
+		sign_y = 0
+	else:
+		raise Exception(
+			"Error. start position or end position dont have numbers for y??")
+
+	coord = start.copy()
+
+	coord[0] += sign_x
+	coord[1] += sign_y
+	while coord != end:
+		coords.append(coord)
+		coord[0] += sign_x
+		coord[1] += sign_y
+
+	return coords
 
 def find_piece(active_player, position):
-    for i in active_player.pieces:
-        if position == i.position:
-            return i
-    return "PieceNotFoundError"
+	for i in active_player.pieces:
+		if position == i.position:
+			return i
+	return "PieceNotFoundError"
 
 def get_piece_type(piece_names):
-    print("CONGRATULATIONS!! YOU HAVE PROMOTED A PAWN!!")
-    piece_valid = False
-    while not piece_valid:
-        piece_name = input("enter the type of piece to turn it to").lower()
-        if piece_name not in piece_names:
-            print("piece not a valid piece")
-    #new_piece = <piece_name>(<active_player.side>, True, chosen_piece.position, first_move = False #don't want to accidentally castle for example, "b") #need to redefine symbols so they are 
-    #chosen based on name and color, ill use lower() and upper()
+	print("CONGRATULATIONS!! YOU HAVE PROMOTED A PAWN!!")
+	piece_valid = False
+	while not piece_valid:
+		piece_name = input("enter the type of piece to turn it to").lower()
+		if piece_name not in piece_names:
+			print("piece not a valid piece")
+	#new_piece = <piece_name>(<active_player.side>, True, chosen_piece.position, first_move = False #don't want to accidentally castle for example, "b") #need to redefine symbols so they are 
+	#chosen based on name and color, ill use lower() and upper()
+	
 def pawn_promote_check(active_player,enemy_player,chosen_piece,active_pieces):
-    if chosen_piece.position[1] ==  enemy_player.backrank and chosen_piece.name == "pawn":
-        chosen_piece.alive = False
-        active_player.pieces.remove(chosen_piece)
-    piece_names = ["bishop","knight","king","queen","rook"]
-    piece_type = get_piece_type()
+	if chosen_piece.position[1] ==  enemy_player.backrank and chosen_piece.name == "pawn":
+		chosen_piece.alive = False
+		active_player.pieces.remove(chosen_piece)
+	piece_names = ["bishop","knight","king","queen","rook"]
+	piece_type = get_piece_type()
+
+def can_castle(direction, active_player, enemy_player):
+	ghost_active_player = copy.deepcopy(active_player)
+	ghost_enemy_player = copy.deepcopy(enemy_player)
+
+	if direction == "long":
+		rook_position = [1,ghost_active_player.back_rank]
+	elif direction == "short":
+		rook_position = [8,ghost_active_player.back_rank]
+	else:
+		raise Exception("No castle direction")
+	
+	king_position = [5,ghost_active_player.back_rank]
+	
+	try:
+		king_piece =  find_piece(ghost_active_player, king_position)
+	except:
+		return False
+	if king_piece.name != "king":
+		return False
+	if not king_piece.first_move:
+		return False
+
+	try:
+		rook_piece = find_piece(ghost_active_player,rook_position)
+	except:
+		return False
+	if rook_piece.name != "rook":
+		return False
+	if not rook_piece.first_move:
+		return False
+
+	if pieces_between(king_position.rook_position,ghost_active_player,ghost_enemy_player):
+		return False
+	
+	for square in squares_between(king_position, rook_position):
+		if find_piece(ghost_active_player, square) != "PieceNotFoundError":
+			ghost_active_player.pieces.remove(find_piece(ghost_active_player,square))
+		move(king_piece,square,ghost_enemy_player)
+		if check(ghost_active_player,ghost_active_player,board):
+			return False
+
+	return True
+	#  then check if rook and king there, then chek if first move,
+	#  then check if pieces betwen, then check that there is no check as you 
+	# loop through, putting the king on each square between

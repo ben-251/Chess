@@ -316,8 +316,6 @@ class king(piece):
     def __init__(self, side, alive, position, first_move, symbol):
         super().__init__(side, alive, position, first_move, symbol, name = "king")
     def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-        x = 0
-        y = 0
         squares = board.copy()
         removed_squares = []
         active_positions = []

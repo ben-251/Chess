@@ -15,7 +15,24 @@ def convert_to_coordinates(letters):
     coord.append(int(letters[1]))
     return coord
 
-
+def display_squares(piece_name,squares):
+    if len(squares) == 1:
+        print(f"the square your {piece_name} can move to is {convert_to_letters(squares[0])}.")
+    else:
+        print(f"the squares your {piece_name} can move to are ",end = "")
+        for i in range(len(squares)):
+            square = convert_to_letters(squares[i])
+            if i == len(squares)-1:
+                print(square,end = ".\n")
+            elif i == (len(squares)-2):
+                if len(squares) == 2:
+                    print(square,end = " and ")
+                else:
+                    print(square,end = ", and ")            
+            else:
+                print(square,end = ", ")
+           
+    
 def display(active_player, enemy_player, is_check,board):
     active_pieces = []
     enemy_pieces = []

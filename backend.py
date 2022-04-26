@@ -438,13 +438,20 @@ def check(active_player, enemy_player, board):
 def castle(direction, active_player, enemy_player):
 	if direction == "short":
 		rook_file = 8
+		king_direction = 2
+		rook_direction = -2
 	elif direction == "long":
 		rook_file = 1
+		king_direction = -2
+		rook_direction = 3
 	king_piece = find_piece(active_player, [5,active_player.back_rank])
 	rook_piece = find_piece(active_player, [rook_file,active_player.back_rank])
 
-	king_piece.position += king_direction
-	rook_piece.position += rook_direction
+	king_piece.position[0] += king_direction
+	rook_piece.position[0] += rook_direction
+	return "Castled"
+
+
 def move(piece, position, enemy_player):
 	for enemy_piece in enemy_player.pieces:
 		if position == enemy_piece.position:
@@ -572,6 +579,7 @@ def can_castle(direction, active_player, enemy_player):
 	ghost_enemy_player = copy.deepcopy(enemy_player)
 
 	if check(ghost_active_player, ghost_enemy_player, board.squares):
+		print("cuz you're on that square")
 		return False
 
 	if direction == "long":
@@ -583,37 +591,46 @@ def can_castle(direction, active_player, enemy_player):
 	
 	king_position = [5,ghost_active_player.back_rank]
 	
-	try:
-		king_piece =  find_piece(ghost_active_player, king_position)
-	except:
+	king_piece =  copy.deepcopy(find_piece(ghost_active_player, king_position))
+	if king_piece == "PieceNotFoundError":
+		find_piece(ghost_active_player,king_position)
+		print("no king on that square")
 		return False
 	if king_piece.name != "king":
+		print("cuz not a king")
 		return False
 	if not king_piece.first_move:
+		print("cuz not king first move")
 		return False
 
-	try:
-		rook_piece = find_piece(ghost_active_player,rook_position)
-	except:
+	rook_piece = find_piece(ghost_active_player,rook_position)
+	if rook_piece == "PieceNotFoundError":
+		print("cuz no piece there")
 		return False
 	if rook_piece.name != "rook":
+		print("not a rook")
 		return False
 	if not rook_piece.first_move:
+		print("not the rooks first move")
 		return False
 
-	if pieces_between(king_position.rook_position,ghost_active_player,ghost_enemy_player):
+	if pieces_between(king_position,rook_position,ghost_active_player,ghost_enemy_player):
+		print("there is a piece between")
 		return False
 	
 	for square in squares_between(king_position, rook_position):
-		# if find_piece(ghost_active_player, square) != "PieceNotFoundError":
-		# 	ghost_active_player.pieces.remove(find_piece(ghost_active_player,square))
 		move(king_piece,square,ghost_enemy_player)
 		if check(ghost_active_player,ghost_active_player,board.squares):
+			print("cant castle thru check")
 			return False
 
-	castle(direction, active_player, enemy_player)
+	castle(direction, ghost_active_player, ghost_enemy_player)
 	if check(ghost_active_player,ghost_enemy_player, board.squares):
+		print("cant castle into check")
+		king_piece.position = [5,ghost_active_player.back_rank]
+		king_piece.first_move = True
 		return False
+
 	return True
 	#  then check if rook and king there, then chek if first move,
 	#  then check if pieces betwen, then check that there is no check as you 

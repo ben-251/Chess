@@ -95,6 +95,7 @@ def display(active_player, enemy_player, is_check,board):
     print("\n |",end = "")
     for i in range(board.x):
         print(chr(i+97),end = " ")
+    print("\n")
     king_piece.symbol = init_symbol
     return
 

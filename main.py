@@ -86,7 +86,19 @@ def get_end(active_player, enemy_player, chosen_piece, valid_squares, board, sta
 def play(active_player, enemy_player, board, is_check):
 	if is_check:
 		print("\n//YOU ARE ON CHECK!!")
-	print(f"\n{active_player.name} is going now.")
+	can_castle_short = ext.can_castle("short", active_player, enemy_player)
+	can_castle_long = ext.can_castle("long", active_player, enemy_player)
+	
+	if can_castle_long and can_castle_short:
+		print("You can castle both ways.")
+	elif can_castle_short:
+		print("You can castle short.")
+	elif can_castle_long:
+		print("You can castle long.")
+	else:
+		print("You can't castle on this move.")
+
+	print(f"{active_player.name} is going now.")
 	all_moves = []
 
 	for i in active_player.pieces:

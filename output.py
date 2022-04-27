@@ -21,7 +21,6 @@ def display_squares(piece_name,squares,can_castle_short,can_castle_long):
     elif len(squares) == 0:
         print(f"The {piece_name} you chose cannot move to any squares")
     else:
-        print(f"the squares your {piece_name} can move to are ",end = "")
         for i in range(len(squares)):
             square = convert_to_letters(squares[i])
             if i == len(squares)-1:
@@ -74,7 +73,7 @@ def display(active_player, enemy_player, is_check,board):
     print(".")
 
     for y in range(board.y, 0, -1):
-        print(y,end = "")
+        print(y,end = " ")
         for x in range(1, board.x+1):
             if [x, y] in active_positions:
                 player_with_piece = active_player

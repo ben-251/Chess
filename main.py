@@ -122,7 +122,7 @@ def play(active_player, enemy_player, board, is_check):
 	all_positions.extend(active_positions)
 
 	chosen_piece, valid_squares, start_position = get_start(
-		active_player, enemy_player, active_positions, enemy_positions, ext.board.squares,can_castle_long,can_castle_long)
+		active_player, enemy_player, active_positions, enemy_positions, ext.board.squares,can_castle_short,can_castle_long)
 	action = get_end(active_player, enemy_player, chosen_piece,
 			valid_squares, ext.board.squares, start_position,is_check)
 

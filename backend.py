@@ -385,8 +385,8 @@ white_pawn_8 = pawn("white", True, [8, 2], True, "o")
 
 white_pieces = [white_pawn_1,
 				white_pawn_2, white_pawn_3, white_pawn_4, white_pawn_5,
-				white_pawn_6, white_pawn_7, white_pawn_8, white_bishop_1, 
-				white_knight_1, white_rook_1,
+				white_pawn_6, white_pawn_7, white_pawn_8, white_bishop_1, white_bishop_2,
+				white_knight_1, white_knight_2, white_rook_1,
 				white_rook_2, white_queen, white_king]
 
 black_bishop_1 = bishop("black", True, [3, 8], True, "B")

@@ -20,11 +20,15 @@ def no_spaces(array_input):
 		num[counter] = (max+2) - (len(array_input[counter]))
 	return num
 	
-def spaces(array_input):
+def spaces(array_input,symbol = None):
+	if symbol:
+		sign = symbol
+	else:
+		sign = "-"
 	space = [""]*len(array_input)
 	for k in range(len(array_input)):
 		for i in range(no_spaces(array_input)[k]):
-			space[k]+="-"
+			space[k]+= sign
 	return space
 
 def no_items(all_arrays):
@@ -48,12 +52,17 @@ def display(array1,array2):
 	for k in range(longest(all_arrays)):
 		string += (str(array1[k])+" "+spaces(array1)[k]+" "+str(array2[k])+"\n")
 	return string
-def single(Array1,symbol = None):
+def single(Array1,symbol = None, end = None):
 	string = ""
 	if symbol:
 		sign = symbol
 	else: 
-		sign = "•" 
+		sign = "•"
+	if end:
+		end_sign = end
+	else:
+		end_sign = ""
+	 
 	for k in Array1:
-		string += sign+str(k)+",\n"
+		string += sign+str(k)+f"{end_sign}\n"
 	return string

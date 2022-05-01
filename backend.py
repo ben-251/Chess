@@ -410,9 +410,9 @@ white_pieces = [white_pawn_1,
 				white_pawn_2, white_pawn_3, white_pawn_4, white_pawn_5,
 				white_pawn_6, white_pawn_7, white_pawn_8, white_bishop_1, white_bishop_2,
 				white_knight_1, white_knight_2,  white_rook_1,
-				white_rook_2, white_king]
+				white_rook_2, white_king, white_queen]
 
-black_bishop_1 = bishop("black", True, [7, 4], True, "B")
+black_bishop_1 = bishop("black", True, [3, 8], True, "B")
 black_bishop_2 = bishop("black", True, [6, 8], True, "B")
 black_knight_1 = knight("black", True, [2, 8], True, "N")
 black_knight_2 = knight("black", True, [7, 8], True, "N")
@@ -423,7 +423,7 @@ black_king = king("black", True, [5, 8], True, "K")
 black_pawn_1 = pawn("black", True, [1, 7], True, "O")
 black_pawn_2 = pawn("black", True, [2, 7], True, "O")
 black_pawn_3 = pawn("black", True, [3, 7], True, "O")
-black_pawn_4 = pawn("black", True, [4, 5], True, "O")
+black_pawn_4 = pawn("black", True, [4, 7], True, "O")
 black_pawn_5 = pawn("black", True, [5, 7], True, "O")
 black_pawn_6 = pawn("black", True, [6, 7], True, "O")
 black_pawn_7 = pawn("black", True, [7, 7], True, "O")
@@ -432,7 +432,7 @@ black_pawn_8 = pawn("black", True, [8, 7], True, "O")
 black_pieces = [black_rook_1, black_rook_2,
 				black_bishop_1, black_bishop_2, black_knight_1,
 				black_knight_2, black_queen, black_king, black_pawn_1,
-				black_pawn_2, black_pawn_3, black_pawn_4,
+				black_pawn_2, black_pawn_3, black_pawn_4, black_pawn_5,
 				black_pawn_6, black_pawn_7, black_pawn_8]
 
 player1 = player(True, "white", white_pieces, "player1", 1)

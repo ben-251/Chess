@@ -2,7 +2,6 @@ import backend as ext
 import output as out
 import copy
 
-
 def get_array(stage, valid_squares):
 	valid_coord = False
 	while valid_coord == False:
@@ -27,7 +26,6 @@ def get_array(stage, valid_squares):
 			if stage == "start":
 				print("you don't have a piece on that square")
 			valid_coord = False
-
 	return coord
 
 
@@ -58,7 +56,6 @@ def get_start(active_player, enemy_player, active_positions, enemy_positions, bo
 			piece_valid = False
 	return chosen_piece, valid_squares, start_position
 
-
 def get_end(active_player, enemy_player, chosen_piece, valid_squares, board, start_position, is_check):
 	square_valid = False
 	while square_valid == False:
@@ -86,19 +83,14 @@ def get_end(active_player, enemy_player, chosen_piece, valid_squares, board, sta
 		if end_position not in valid_squares:
 			square_valid = False
 			print("sorry, you cant move here..")
-
 	return ext.move(chosen_piece, end_position, enemy_player)
 
-
 def play(active_player, enemy_player, board, is_check):
-	if is_check:
-		print("\n//YOU ARE ON CHECK!!")
 	can_castle_short = ext.can_castle("short", active_player, enemy_player)
 	can_castle_long = ext.can_castle("long", active_player, enemy_player)
 
 	# if not can_castle_long and not can_castle_short:
 	# 	print("You can't castle on this move.")
-	print(f"{active_player.name} is going now.")
 	all_moves = []
 
 	for i in active_player.pieces:
@@ -115,6 +107,10 @@ def play(active_player, enemy_player, board, is_check):
 		else:
 			return "draw", "stalemate."
 
+	print(f"{active_player.name} is going now.")
+	if is_check:
+		print("you are in check.")
+	
 	active_positions = []
 	for i in active_player.pieces:
 		active_positions.append(i.position)
@@ -176,10 +172,8 @@ def start_game():
 						  ext.board.squares, is_check)
 	return winner, reason
 
-
 def start():
 	print("enter \"help\" to see the help menu.")
 	winner, reason = start_game()
 	print(f"Game over. {winner} by {reason}")
-
 start()

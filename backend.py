@@ -58,16 +58,15 @@ board = board_class(8, 8)
 
 
 class piece:
-	def __init__(self, side, alive, position, first_move):
+	def __init__(self, side, position, first_move):
 		self.side = side
-		self.alive = alive
 		self.position = position
 		self.first_move = first_move
 
 
 class bishop(piece):
-	def __init__(self, side, alive, position, first_move):
-		super().__init__(side, alive, position, first_move)
+	def __init__(self, side, position, first_move):
+		super().__init__(side, position, first_move)
 		self.name = "bishop"
 		if side == "white":
 			self.symbol = "b"
@@ -124,8 +123,8 @@ class bishop(piece):
 
 
 class knight(piece):
-	def __init__(self, side, alive, position, first_move):
-		super().__init__(side, alive, position, first_move)
+	def __init__(self, side, position, first_move):
+		super().__init__(side, position, first_move)
 		self.name = "knight"
 		if side == "white":
 			self.symbol = "n"
@@ -172,8 +171,8 @@ class knight(piece):
 
 
 class rook(piece):
-	def __init__(self, side, alive, position, first_move):
-		super().__init__(side, alive, position, first_move)
+	def __init__(self, side, position, first_move):
+		super().__init__(side, position, first_move)
 		self.name = "rook"
 		if side == "white":
 			self.symbol = "r"
@@ -223,8 +222,8 @@ class rook(piece):
 
 
 class queen(piece):
-	def __init__(self, side, alive, position, first_move):
-		super().__init__(side, alive, position, first_move)
+	def __init__(self, side, position, first_move):
+		super().__init__(side, position, first_move)
 		self.name = "queen"
 		if side == "white":
 			self.symbol = "q"
@@ -275,8 +274,8 @@ class queen(piece):
 
 
 class pawn(piece):
-	def __init__(self, side, alive, position, first_move):
-		super().__init__(side, alive, position, first_move)
+	def __init__(self, side, position, first_move):
+		super().__init__(side, position, first_move)
 		self.name = "pawn"
 		if side == "white":
 			self.symbol = "o"
@@ -351,8 +350,8 @@ class pawn(piece):
 
 
 class king(piece):
-	def __init__(self, side, alive, position, first_move):
-		super().__init__(side, alive, position, first_move)
+	def __init__(self, side, position, first_move):
+		super().__init__(side, position, first_move)
 		self.name = "king"
 		if side == "white":
 			self.symbol = "k"
@@ -402,22 +401,22 @@ class king(piece):
 
 piece_classes = [bishop,knight,pawn,rook,queen,king]
 piece_names = ["bishop", "knight", "king", "queen", "rook"]
-white_bishop_1 = bishop("white", True, [3, 1], True)
-white_bishop_2 = bishop("white", True, [6, 1], True)
-white_knight_1 = knight("white", True, [2, 1], True)
-white_knight_2 = knight("white", True, [7, 1], True)
-white_rook_1 = rook("white", True, [1, 1], True)
-white_rook_2 = rook("white", True, [8, 1], True)
-white_queen = queen("white", True, [4, 1], True)
-white_king = king("white", True, [5, 1], True)
-white_pawn_1 = pawn("white", True, [1, 7], True)
-white_pawn_2 = pawn("white", True, [2, 2], True)
-white_pawn_3 = pawn("white", True, [3, 2], True)
-white_pawn_4 = pawn("white", True, [4, 2], True)
-white_pawn_5 = pawn("white", True, [5, 2], True)
-white_pawn_6 = pawn("white", True, [6, 2], True)
-white_pawn_7 = pawn("white", True, [7, 2], True)
-white_pawn_8 = pawn("white", True, [8, 2], True)
+white_bishop_1 = bishop("white", [3, 1], True)
+white_bishop_2 = bishop("white", [6, 1], True)
+white_knight_1 = knight("white", [2, 1], True)
+white_knight_2 = knight("white", [7, 1], True)
+white_rook_1 = rook("white", [1, 1], True)
+white_rook_2 = rook("white", [8, 1], True)
+white_queen = queen("white", [4, 1], True)
+white_king = king("white", [5, 1], True)
+white_pawn_1 = pawn("white", [1, 2], True)
+white_pawn_2 = pawn("white", [2, 2], True)
+white_pawn_3 = pawn("white", [3, 2], True)
+white_pawn_4 = pawn("white", [4, 2], True)
+white_pawn_5 = pawn("white", [5, 2], True)
+white_pawn_6 = pawn("white", [6, 2], True)
+white_pawn_7 = pawn("white", [7, 2], True)
+white_pawn_8 = pawn("white", [8, 2], True)
 
 white_pieces = [white_pawn_1,
 				white_pawn_2, white_pawn_3, white_pawn_4, white_pawn_5,
@@ -425,26 +424,26 @@ white_pieces = [white_pawn_1,
 				white_knight_1, white_knight_2,  white_rook_1,
 				white_rook_2, white_king, white_queen]
 
-black_bishop_1 = bishop("black", True, [3, 8], True)
-black_bishop_2 = bishop("black", True, [6, 8], True)
-black_knight_1 = knight("black", True, [2, 8], True)
-black_knight_2 = knight("black", True, [7, 8], True)
-black_rook_1 = rook("black", True, [1, 8], True)
-black_rook_2 = rook("black", True, [8, 8], True)
-black_queen = queen("black", True, [4, 8], True,)
-black_king = king("black", True, [5, 8], True)
-black_pawn_1 = pawn("black", True, [1, 7], True)
-black_pawn_2 = pawn("black", True, [2, 7], True)
-black_pawn_3 = pawn("black", True, [3, 7], True)
-black_pawn_4 = pawn("black", True, [4, 7], True)
-black_pawn_5 = pawn("black", True, [5, 7], True)
-black_pawn_6 = pawn("black", True, [6, 7], True)
-black_pawn_7 = pawn("black", True, [7, 7], True)
-black_pawn_8 = pawn("black", True, [8, 7], True)
+black_bishop_1 = bishop("black", [3, 8], True)
+black_bishop_2 = bishop("black", [6, 8], True)
+black_knight_1 = knight("black", [2, 8], True)
+black_knight_2 = knight("black", [7, 8], True)
+black_rook_1 = rook("black", [1, 8], True)
+black_rook_2 = rook("black", [8, 8], True)
+black_queen = queen("black", [4, 8], True,)
+black_king = king("black", [5, 8], True)
+black_pawn_1 = pawn("black", [1, 7], True)
+black_pawn_2 = pawn("black", [2, 7], True)
+black_pawn_3 = pawn("black", [3, 7], True)
+black_pawn_4 = pawn("black", [4, 7], True)
+black_pawn_5 = pawn("black", [5, 7], True)
+black_pawn_6 = pawn("black", [6, 7], True)
+black_pawn_7 = pawn("black", [7, 7], True)
+black_pawn_8 = pawn("black", [8, 7], True)
 
-black_pieces = [black_rook_2,
+black_pieces = [black_rook_1, black_rook_2,
 				black_bishop_1, black_bishop_2, black_knight_1,
-				black_knight_2, black_queen, black_king,
+				black_knight_2, black_queen, black_king, black_pawn_1,
 				black_pawn_2, black_pawn_3, black_pawn_4, black_pawn_5,
 				black_pawn_6, black_pawn_7, black_pawn_8]
 
@@ -492,7 +491,6 @@ def castle(direction, active_player, enemy_player):
 def move(piece, position, enemy_player):
 	for enemy_piece in enemy_player.pieces:
 		if position == enemy_piece.position:
-			enemy_piece.alive = False
 			enemy_player.pieces.remove(enemy_piece)
 			break
 
@@ -609,16 +607,15 @@ def get_piece_type(piece_names):
 			print("piece not a valid piece")
 	
 	for piece in piece_classes:
-		sample_piece = piece("",True,[],True) #refine later
+		sample_piece = piece("",[],True) #refine later
 		if sample_piece.name == piece_name:
 			return piece
 	return "notFOund"
 
 def pawn_promote_check(active_player, enemy_player, chosen_piece):
 	if chosen_piece.position[1] == enemy_player.backrank and chosen_piece.name == "pawn":
-		chosen_piece.alive = False
 		active_player.pieces.remove(chosen_piece)
-		piece = get_piece_type(piece_names)(active_player.side,True,chosen_piece.position,False)
+		piece = get_piece_type(piece_names)(active_player.side,chosen_piece.position,False)
 		active_player.pieces.append(piece)
 		return True,chosen_piece.position
 	return False, chosen_piece.position

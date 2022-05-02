@@ -28,13 +28,12 @@ def get_array(stage, valid_squares):
 			valid_coord = False
 	return coord
 
-
-def get_start(active_player, enemy_player, active_positions, enemy_positions, board, can_castle_short, can_castle_long):
+def get_chosen_piece(active_player, active_positions):
 	piece_valid = False
 	while piece_valid == False:  # see extras.txt "attribution"
 		start_position = get_array("start", active_positions)
 		if start_position == "back":
-			return get_start(active_player, enemy_player, active_positions, enemy_positions, board)
+			return get_valid_piece(active_player, active_positions)
 		chosen_piece = ext.find_piece(active_player, start_position)
 
 		piece_valid = True
@@ -42,21 +41,26 @@ def get_start(active_player, enemy_player, active_positions, enemy_positions, bo
 			piece_valid = False
 			print("Try Again. NO piece here.")
 			continue
+	return chosen_piece,start_position
 
-		valid_squares = chosen_piece.determine_valid_squares(chosen_piece.position,
-															 active_player, enemy_player, board)
+def get_start(active_player, enemy_player, board, chosen_piece, can_castle_short, can_castle_long):
+	active_positions = []
+	for i in active_player.pieces:
+		active_positions.append(i.position)
 
-		valid_coords = []
-		for i in valid_squares:
-			valid_coords.append(out.convert_to_letters(i))
+	valid_squares = chosen_piece.determine_valid_squares(chosen_piece.position,
+															active_player, enemy_player, board)
+	valid_coords = []
+	for i in valid_squares:
+		valid_coords.append(out.convert_to_letters(i))
+	out.display_squares(chosen_piece.name, valid_squares,
+						can_castle_short, can_castle_long)
+	if len(valid_squares) == 0 and not can_castle_short and not can_castle_long:
+		piece_valid = False
 
-		out.display_squares(chosen_piece.name, valid_squares,
-							can_castle_short, can_castle_long)
-		if len(valid_squares) == 0 and not can_castle_short and not can_castle_long:
-			piece_valid = False
-	return chosen_piece, valid_squares, start_position
+	return valid_squares
 
-def get_end(active_player, enemy_player, chosen_piece, valid_squares, board, start_position, is_check):
+def process_end_position(active_player, enemy_player, chosen_piece, valid_squares, board, start_position, is_check):
 	square_valid = False
 	while square_valid == False:
 		square_valid = True
@@ -122,9 +126,10 @@ def play(active_player, enemy_player, board, is_check):
 	all_positions = enemy_positions.copy()
 	all_positions.extend(active_positions)
 
-	chosen_piece, valid_squares, start_position = get_start(
-		active_player, enemy_player, active_positions, enemy_positions, ext.board.squares, can_castle_short, can_castle_long)
-	action = get_end(active_player, enemy_player, chosen_piece,
+	chosen_piece, start_position = get_chosen_piece(active_player, active_positions)
+	valid_squares = get_start(active_player, enemy_player, ext.board.squares, chosen_piece, can_castle_short, can_castle_long)
+
+	action = process_end_position(active_player, enemy_player, chosen_piece,
 					 valid_squares, ext.board.squares, start_position, is_check)
 
 	active_player.just_promoted,pawn_destination = ext.pawn_promote_check(active_player, enemy_player, chosen_piece)

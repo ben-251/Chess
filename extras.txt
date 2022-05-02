@@ -1,18 +1,3 @@
-rank 8:
-    print 24 "-"s 
-    for each piece, print (color thing)
-    print 24 -s 
-
-
-
-
-
-
-
-
-
-
-
 Rules for movement:
     Cannot move onto any already placed pieces (worry about captures later)
     Cannot do nothing
@@ -22,18 +7,11 @@ Rules for movement:
 How pawns will work:
 
 each pawn looks like this:
-color_pawn_num = pawn("color",True,[x,y],True) #color, alive, position, first_move.
+color_pawn_num = pawn("color",True,[x,y],True) #color, alive, position, first_move. //alive removed now
 
 when i get movment working, then ill be able to check like this:
 
-if desired position has piece
-
-
-
-
-
-
-
+//deleted 
 
 The bishops movement:
     if x +- d, y +- d 

@@ -3,23 +3,13 @@ import copy
 
 
 class player:
-	def __init__(self, turn, side, pieces, name, back_rank):
+	def __init__(self, turn, side, pieces, name, backrank, just_promoted):
 		self.turn = turn
 		self.side = side
 		self.pieces = pieces
 		self.name = name
-		self.back_rank = back_rank
-
-
-class square:
-	def __init__(self, position, symbol, color):
-		self.position = position
-		self.symbol = symbol
-		self.color = color
-
-	def assign(self, all_players):
-		self.symbol = find_piece(all_players, self.position).symbol
-
+		self.backrank = backrank
+		self.just_promoted = just_promoted
 
 class board_class:
 	def __init__(self, x, y):
@@ -68,18 +58,21 @@ board = board_class(8, 8)
 
 
 class piece:
-	def __init__(self, side, alive, position, first_move, symbol):
+	def __init__(self, side, alive, position, first_move):
 		self.side = side
 		self.alive = alive
 		self.position = position
 		self.first_move = first_move
-		self.symbol = symbol
 
 
 class bishop(piece):
-	def __init__(self, side, alive, position, first_move, symbol):
-		super().__init__(side, alive, position, first_move, symbol)
+	def __init__(self, side, alive, position, first_move):
+		super().__init__(side, alive, position, first_move)
 		self.name = "bishop"
+		if side == "white":
+			self.symbol = "b"
+		elif side == "black":
+			self.symbol = "B"
 
 	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
 		squares = board.copy()
@@ -131,10 +124,13 @@ class bishop(piece):
 
 
 class knight(piece):
-	def __init__(self, side, alive, position, first_move, symbol):
-		super().__init__(side, alive, position, first_move, symbol)
+	def __init__(self, side, alive, position, first_move):
+		super().__init__(side, alive, position, first_move)
 		self.name = "knight"
-
+		if side == "white":
+			self.symbol = "n"
+		elif side == "black":
+			self.symbol = "N"
 	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
 		squares = board.copy()
 		removed_squares = []
@@ -176,9 +172,13 @@ class knight(piece):
 
 
 class rook(piece):
-	def __init__(self, side, alive, position, first_move, symbol):
-		super().__init__(side, alive, position, first_move, symbol)
+	def __init__(self, side, alive, position, first_move):
+		super().__init__(side, alive, position, first_move)
 		self.name = "rook"
+		if side == "white":
+			self.symbol = "r"
+		elif side == "black":
+			self.symbol = "R"
 
 	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
 		squares = board.copy()
@@ -223,9 +223,13 @@ class rook(piece):
 
 
 class queen(piece):
-	def __init__(self, side, alive, position, first_move, symbol):
-		super().__init__(side, alive, position, first_move, symbol)
+	def __init__(self, side, alive, position, first_move):
+		super().__init__(side, alive, position, first_move)
 		self.name = "queen"
+		if side == "white":
+			self.symbol = "q"
+		elif side == "black":
+			self.symbol = "Q"
 
 	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
 		squares = board.copy()
@@ -271,9 +275,13 @@ class queen(piece):
 
 
 class pawn(piece):
-	def __init__(self, side, alive, position, first_move, symbol):
-		super().__init__(side, alive, position, first_move, symbol)
+	def __init__(self, side, alive, position, first_move):
+		super().__init__(side, alive, position, first_move)
 		self.name = "pawn"
+		if side == "white":
+			self.symbol = "o"
+		elif side == "black":
+			self.symbol = "O"
 
 	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
 		squares = board.copy()
@@ -343,9 +351,13 @@ class pawn(piece):
 
 
 class king(piece):
-	def __init__(self, side, alive, position, first_move, symbol):
-		super().__init__(side, alive, position, first_move, symbol)
+	def __init__(self, side, alive, position, first_move):
+		super().__init__(side, alive, position, first_move)
 		self.name = "king"
+		if side == "white":
+			self.symbol = "k"
+		elif side == "black":
+			self.symbol = "K"
 
 	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
 		x = 0
@@ -388,23 +400,24 @@ class king(piece):
 			squares.remove(i)
 		return squares
 
-
-white_bishop_1 = bishop("white", True, [3, 1], True, "b")
-white_bishop_2 = bishop("white", True, [6, 1], True, "b")
-white_knight_1 = knight("white", True, [2, 1], True, "n")
-white_knight_2 = knight("white", True, [7, 1], True, "n")
-white_rook_1 = rook("white", True, [1, 1], True, "r")
-white_rook_2 = rook("white", True, [8, 1], True, "r")
-white_queen = queen("white", True, [4, 1], True, "q")
-white_king = king("white", True, [5, 1], True, "k")
-white_pawn_1 = pawn("white", True, [1, 2], True, "o")
-white_pawn_2 = pawn("white", True, [2, 2], True, "o")
-white_pawn_3 = pawn("white", True, [3, 2], True, "o")
-white_pawn_4 = pawn("white", True, [4, 2], True, "o")
-white_pawn_5 = pawn("white", True, [5, 2], True, "o")
-white_pawn_6 = pawn("white", True, [6, 2], True, "o")
-white_pawn_7 = pawn("white", True, [7, 2], True, "o")
-white_pawn_8 = pawn("white", True, [8, 2], True, "o")
+piece_classes = [bishop,knight,pawn,rook,queen,king]
+piece_names = ["bishop", "knight", "king", "queen", "rook"]
+white_bishop_1 = bishop("white", True, [3, 1], True)
+white_bishop_2 = bishop("white", True, [6, 1], True)
+white_knight_1 = knight("white", True, [2, 1], True)
+white_knight_2 = knight("white", True, [7, 1], True)
+white_rook_1 = rook("white", True, [1, 1], True)
+white_rook_2 = rook("white", True, [8, 1], True)
+white_queen = queen("white", True, [4, 1], True)
+white_king = king("white", True, [5, 1], True)
+white_pawn_1 = pawn("white", True, [1, 7], True)
+white_pawn_2 = pawn("white", True, [2, 2], True)
+white_pawn_3 = pawn("white", True, [3, 2], True)
+white_pawn_4 = pawn("white", True, [4, 2], True)
+white_pawn_5 = pawn("white", True, [5, 2], True)
+white_pawn_6 = pawn("white", True, [6, 2], True)
+white_pawn_7 = pawn("white", True, [7, 2], True)
+white_pawn_8 = pawn("white", True, [8, 2], True)
 
 white_pieces = [white_pawn_1,
 				white_pawn_2, white_pawn_3, white_pawn_4, white_pawn_5,
@@ -412,31 +425,31 @@ white_pieces = [white_pawn_1,
 				white_knight_1, white_knight_2,  white_rook_1,
 				white_rook_2, white_king, white_queen]
 
-black_bishop_1 = bishop("black", True, [3, 8], True, "B")
-black_bishop_2 = bishop("black", True, [6, 8], True, "B")
-black_knight_1 = knight("black", True, [2, 8], True, "N")
-black_knight_2 = knight("black", True, [7, 8], True, "N")
-black_rook_1 = rook("black", True, [1, 8], True, "R")
-black_rook_2 = rook("black", True, [8, 8], True, "R")
-black_queen = queen("black", True, [4, 8], True, "Q")
-black_king = king("black", True, [5, 8], True, "K")
-black_pawn_1 = pawn("black", True, [1, 7], True, "O")
-black_pawn_2 = pawn("black", True, [2, 7], True, "O")
-black_pawn_3 = pawn("black", True, [3, 7], True, "O")
-black_pawn_4 = pawn("black", True, [4, 7], True, "O")
-black_pawn_5 = pawn("black", True, [5, 7], True, "O")
-black_pawn_6 = pawn("black", True, [6, 7], True, "O")
-black_pawn_7 = pawn("black", True, [7, 7], True, "O")
-black_pawn_8 = pawn("black", True, [8, 7], True, "O")
+black_bishop_1 = bishop("black", True, [3, 8], True)
+black_bishop_2 = bishop("black", True, [6, 8], True)
+black_knight_1 = knight("black", True, [2, 8], True)
+black_knight_2 = knight("black", True, [7, 8], True)
+black_rook_1 = rook("black", True, [1, 8], True)
+black_rook_2 = rook("black", True, [8, 8], True)
+black_queen = queen("black", True, [4, 8], True,)
+black_king = king("black", True, [5, 8], True)
+black_pawn_1 = pawn("black", True, [1, 7], True)
+black_pawn_2 = pawn("black", True, [2, 7], True)
+black_pawn_3 = pawn("black", True, [3, 7], True)
+black_pawn_4 = pawn("black", True, [4, 7], True)
+black_pawn_5 = pawn("black", True, [5, 7], True)
+black_pawn_6 = pawn("black", True, [6, 7], True)
+black_pawn_7 = pawn("black", True, [7, 7], True)
+black_pawn_8 = pawn("black", True, [8, 7], True)
 
-black_pieces = [black_rook_1, black_rook_2,
+black_pieces = [black_rook_2,
 				black_bishop_1, black_bishop_2, black_knight_1,
-				black_knight_2, black_queen, black_king, black_pawn_1,
+				black_knight_2, black_queen, black_king,
 				black_pawn_2, black_pawn_3, black_pawn_4, black_pawn_5,
 				black_pawn_6, black_pawn_7, black_pawn_8]
 
-player1 = player(True, "white", white_pieces, "player1", 1)
-player2 = player(False, "black", black_pieces, "player2", 8)
+player1 = player(True, "white", white_pieces, "player1", 1, False)
+player2 = player(False, "black", black_pieces, "player2", 8, False)
 
 
 def check(active_player, enemy_player, board):
@@ -467,9 +480,9 @@ def castle(direction, active_player, enemy_player):
 		rook_file = 1
 		king_direction = -2
 		rook_direction = 3
-	king_piece = find_piece(active_player, [5, active_player.back_rank])
+	king_piece = find_piece(active_player, [5, active_player.backrank])
 	rook_piece = find_piece(
-		active_player, [rook_file, active_player.back_rank])
+		active_player, [rook_file, active_player.backrank])
 
 	king_piece.position[0] += king_direction
 	rook_piece.position[0] += rook_direction
@@ -589,20 +602,26 @@ def get_piece_type(piece_names):
 	print("CONGRATULATIONS!! YOU HAVE PROMOTED A PAWN!!")
 	piece_valid = False
 	while not piece_valid:
-		piece_name = input("enter the type of piece to turn it to").lower()
+		piece_valid = True
+		piece_name = input("enter the type of piece to turn it to: ").lower()
 		if piece_name not in piece_names:
+			piece_valid = False
 			print("piece not a valid piece")
-	# new_piece = <piece_name>(<active_player.side>, True, chosen_piece.position, first_move = False #don't want to accidentally castle for example, "b") #need to redefine symbols so they are
-	# chosen based on name and color, ill use lower() and upper()
+	
+	for piece in piece_classes:
+		sample_piece = piece("",True,[],True) #refine later
+		if sample_piece.name == piece_name:
+			return piece
+	return "notFOund"
 
-
-def pawn_promote_check(active_player, enemy_player, chosen_piece, active_pieces):
+def pawn_promote_check(active_player, enemy_player, chosen_piece):
 	if chosen_piece.position[1] == enemy_player.backrank and chosen_piece.name == "pawn":
 		chosen_piece.alive = False
 		active_player.pieces.remove(chosen_piece)
-	piece_names = ["bishop", "knight", "king", "queen", "rook"]
-	piece_type = get_piece_type()
-
+		piece = get_piece_type(piece_names)(active_player.side,True,chosen_piece.position,False)
+		active_player.pieces.append(piece)
+		return True,chosen_piece.position
+	return False, chosen_piece.position
 
 def can_castle(direction, active_player, enemy_player):
 	ghost_active_player = copy.deepcopy(active_player)
@@ -612,13 +631,13 @@ def can_castle(direction, active_player, enemy_player):
 		return False
 
 	if direction == "long":
-		rook_position = [1, ghost_active_player.back_rank]
+		rook_position = [1, ghost_active_player.backrank]
 	elif direction == "short":
-		rook_position = [8, ghost_active_player.back_rank]
+		rook_position = [8, ghost_active_player.backrank]
 	else:
 		raise Exception("No castle direction")
 
-	king_position = [5, ghost_active_player.back_rank]
+	king_position = [5, ghost_active_player.backrank]
 
 	king_piece = copy.deepcopy(find_piece(ghost_active_player, king_position))
 	if king_piece == "PieceNotFoundError":
@@ -647,7 +666,7 @@ def can_castle(direction, active_player, enemy_player):
 
 	castle(direction, ghost_active_player, ghost_enemy_player)
 	if check(ghost_active_player, ghost_enemy_player, board.squares):
-		king_piece.position = [5, ghost_active_player.back_rank]
+		king_piece.position = [5, ghost_active_player.backrank]
 		king_piece.first_move = True
 		return False
 

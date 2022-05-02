@@ -131,6 +131,21 @@ def play(active_player, enemy_player, board, is_check):
 	action = get_end(active_player, enemy_player, chosen_piece,
 					 valid_squares, ext.board.squares, start_position, is_check)
 
+	active_player.just_promoted,pawn_destination = ext.pawn_promote_check(active_player, enemy_player, chosen_piece)
+
+	if not active_player.just_promoted:
+		if action == "moved":
+			print(f"The {chosen_piece.name} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
+		elif action == "castled":
+			print("Successfully Castled.")
+	else:
+		print(f"The pawn which was on {out.convert_to_letters(start_position)} is now a {ext.find_piece(active_player, pawn_destination).name} on {out.convert_to_letters(pawn_destination)}")
+
+	is_check = ext.check(active_player, enemy_player, ext.board.squares)
+	out.display(active_player, enemy_player, is_check, ext.board)
+	active_player.just_promoted = False
+
+	#swap
 	if active_player == ext.player1 and enemy_player == ext.player2:
 		active_player = ext.player2
 		enemy_player = ext.player1
@@ -140,13 +155,6 @@ def play(active_player, enemy_player, board, is_check):
 	else:
 		raise Exception("Neither player is playing rn????")
 
-	if action == "moved":
-		print(f"The {chosen_piece.name} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
-	elif action == "castled":
-		print("Successfully Castled.")
-	# ext.pawn_promote_check(active_player,chosen_piece,start_position)
-	is_check = ext.check(active_player, enemy_player, ext.board.squares)
-	out.display(active_player, enemy_player, is_check, ext.board)
 	return play(active_player, enemy_player, ext.board.squares, is_check)
 
 
@@ -173,6 +181,5 @@ def start():
 	print("enter \"help\" to see the help menu.")
 	winner, reason = start_game()
 	print(f"Game over. {winner} by {reason}")
-
 
 start()

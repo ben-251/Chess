@@ -2,6 +2,7 @@ import backend as ext
 import output as out
 import copy
 
+
 def get_array(stage, valid_squares):
 	valid_coord = False
 	while valid_coord == False:
@@ -28,45 +29,49 @@ def get_array(stage, valid_squares):
 			valid_coord = False
 	return coord
 
-def get_chosen_piece(active_player, active_positions):
+def get_selected_piece(active_player, active_positions):
 	piece_valid = False
 	while piece_valid == False:  # see extras.txt "attribution"
 		start_position = get_array("start", active_positions)
 		if start_position == "back":
 			return get_valid_piece(active_player, active_positions)
-		chosen_piece = ext.find_piece(active_player, start_position)
+		selected_piece = ext.find_piece(active_player, start_position)
 
 		piece_valid = True
-		if chosen_piece == "PieceNotFoundError":
+		if selected_piece == "PieceNotFoundError":
 			piece_valid = False
 			print("Try Again. NO piece here.")
 			continue
-	return chosen_piece,start_position
+	return selected_piece,start_position
 
-def get_start(active_player, enemy_player, board, chosen_piece, can_castle_short, can_castle_long):
+def verify_piece(active_player, enemy_player, board, selected_piece, can_castle_short, can_castle_long):
+	piece_valid = True
 	active_positions = []
 	for i in active_player.pieces:
 		active_positions.append(i.position)
 
-	valid_squares = chosen_piece.determine_valid_squares(chosen_piece.position,
+	valid_squares = selected_piece.determine_valid_squares(selected_piece.position,
 															active_player, enemy_player, board)
 	valid_coords = []
 	for i in valid_squares:
 		valid_coords.append(out.convert_to_letters(i))
-	out.display_squares(chosen_piece.name, valid_squares,
+	out.display_squares(selected_piece.name, valid_squares,
 						can_castle_short, can_castle_long)
 	if len(valid_squares) == 0 and not can_castle_short and not can_castle_long:
 		piece_valid = False
+	
+	if not piece_valid:
+		return False
 
 	return valid_squares
 
-def process_end_position(active_player, enemy_player, chosen_piece, valid_squares, board, start_position, is_check):
+def process_end_position(active_player, enemy_player, selected_piece, valid_squares, board, start_position, is_check):
 	square_valid = False
 	while square_valid == False:
 		square_valid = True
 		end_position = get_array("end", valid_squares)
 		if end_position == "back":
-			return play(active_player, enemy_player, board, is_check)
+			return play(active_player, enemy_player, is_check)
 
 		elif end_position == "0-0-0":
 			if ext.can_castle("long", active_player, enemy_player):
@@ -87,9 +92,10 @@ def process_end_position(active_player, enemy_player, chosen_piece, valid_square
 		if end_position not in valid_squares:
 			square_valid = False
 			print("sorry, you cant move here..")
-	return ext.move(chosen_piece, end_position, enemy_player)
 
-def play(active_player, enemy_player, board, is_check):
+	return ext.move(selected_piece, end_position, enemy_player)
+
+def play(active_player, enemy_player, is_check):
 	can_castle_short = ext.can_castle("short", active_player, enemy_player)
 	can_castle_long = ext.can_castle("long", active_player, enemy_player)
 
@@ -111,6 +117,9 @@ def play(active_player, enemy_player, board, is_check):
 		else:
 			return "draw", "stalemate."
 
+
+	if not ext.draws(active_player,enemy_player,ext.board.squares) == False:
+		return ext.draws(active_player,enemy_player,ext.board.squares)
 	print(f"{active_player.name} is going now.")
 	if is_check:
 		print("you are in check.")
@@ -126,17 +135,20 @@ def play(active_player, enemy_player, board, is_check):
 	all_positions = enemy_positions.copy()
 	all_positions.extend(active_positions)
 
-	chosen_piece, start_position = get_chosen_piece(active_player, active_positions)
-	valid_squares = get_start(active_player, enemy_player, ext.board.squares, chosen_piece, can_castle_short, can_castle_long)
+	selected_piece, start_position = get_selected_piece(active_player, active_positions)
+	valid_squares = verify_piece(active_player, enemy_player, ext.board.squares, selected_piece, can_castle_short, can_castle_long)
+	while valid_squares == False:
+		selected_piece, start_position = get_selected_piece(active_player, active_positions)
+		valid_squares = verify_piece(active_player, enemy_player, ext.board.squares, selected_piece, can_castle_short, can_castle_long)
 
-	action = process_end_position(active_player, enemy_player, chosen_piece,
+	action = process_end_position(active_player, enemy_player, selected_piece,
 					 valid_squares, ext.board.squares, start_position, is_check)
 
-	active_player.just_promoted,pawn_destination = ext.pawn_promote_check(active_player, enemy_player, chosen_piece)
+	active_player.just_promoted,pawn_destination = ext.pawn_promote_check(active_player, enemy_player, selected_piece)
 
 	if not active_player.just_promoted:
 		if action == "moved":
-			print(f"The {chosen_piece.name} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(chosen_piece.position)}.\n")
+			print(f"The {selected_piece.name} which was on {out.convert_to_letters(start_position)} is now on {out.convert_to_letters(selected_piece.position)}.\n")
 		elif action == "castled":
 			print("Successfully Castled.")
 	else:
@@ -156,7 +168,7 @@ def play(active_player, enemy_player, board, is_check):
 	else:
 		raise Exception("Neither player is playing rn????")
 
-	return play(active_player, enemy_player, ext.board.squares, is_check)
+	return play(active_player, enemy_player, is_check)
 
 
 def start_game():
@@ -174,7 +186,7 @@ def start_game():
 	is_check = ext.check(active_player, enemy_player, ext.board.squares)
 	out.display(active_player, enemy_player, is_check, ext.board)
 	winner, reason = play(active_player, enemy_player,
-						  ext.board.squares, is_check)
+						is_check)
 	return winner, reason
 
 def start():

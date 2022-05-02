@@ -26,36 +26,17 @@ class board_class:
 				return i
 		return "SquareNotFound"
 
-	def display(self):
-		count = 1
-		# first row
-		for square in self.squares:
-			for i in range(self.y):
-				if i == self.y:
-					print(square.color, end="|\n")
-				print("|"+square.color, end="")
-
-			# second row
-			for i in range(self.y):
-				print(square.color[0]+square.symbol+square.color[0])
-		# squares is an array of objects with a syymbol and color
-		# for square in squares:
-		#     #first
-		#     ##second row
-
-		# for x in range(1,new_length+1):
-		#     for y in (new_length,0,-1):
-		#         print(sqaure.)
-
-	def resize(new_x, new_y):
+	def resize(self,new_x, new_y):
 		self.squares = []
 		for x in range(new_x):
 			for y in range(new_y):
 				self.squares.append([x+1, y+1])
+		self.x = new_x
+		self.y = new_y
 
 
 board = board_class(8, 8)
-
+board.resize(1,9)
 
 class piece:
 	def __init__(self, side, position, first_move):
@@ -595,6 +576,23 @@ def find_piece(active_player, position):
 			return i
 	return "PieceNotFoundError"
 
+def draws(active_player,enemy_player,board):
+	is_king = [False, False]
+	for square in board:
+		piece = find_piece(active_player,square)
+
+		if isinstance(piece,str):
+			continue
+		if piece.name == "king":
+			is_king[0] = True
+		
+		if piece.name == "king":
+			is_king[1] = True
+	
+	if not all(is_king):
+		return "no winner", "missing one or more king(s)"
+	
+	return False
 
 def get_piece_type(piece_names):
 	print("CONGRATULATIONS!! YOU HAVE PROMOTED A PAWN!!")

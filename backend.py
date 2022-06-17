@@ -1,21 +1,21 @@
 # initialised
 import copy
-
+from functools import cache
 
 class player:
 	def __init__(self, turn, side, pieces, name, backrank, just_promoted):
-		self.turn = turn
-		self.side = side
-		self.pieces = pieces
-		self.name = name
-		self.backrank = backrank
-		self.just_promoted = just_promoted
+		self.turn : bool = turn
+		self.side : str = side
+		self.pieces : list = pieces
+		self.name : str = name
+		self.backrank : int = backrank
+		self.just_promoted : bool = just_promoted
 
 class board_class:
 	def __init__(self, x, y):
 		self.squares = []
-		self.x = x
-		self.y = y
+		self.x: int = x
+		self.y: int = y
 		for x_val in range(x):
 			for y_val in range(y):
 				self.squares.append([x_val+1, y_val+1])
@@ -35,18 +35,21 @@ class board_class:
 		self.y = new_y
 
 
-board = board_class(8, 8)
-board.resize(1,9)
+board = board_class(1, 8)
+board.resize(8,8)
 
 class piece:
-	def __init__(self, side, position, first_move):
-		self.side = side
-		self.position = position
-		self.first_move = first_move
+	def __init__(self, side, position, first_move = None):
+		self.side: str = side
+		self.position: list = position
+		if first_move is None:
+			self.first_move = True
+		else:
+			self.first_move = first_move
 
 
 class bishop(piece):
-	def __init__(self, side, position, first_move):
+	def __init__(self, side, position, first_move = None): 
 		super().__init__(side, position, first_move)
 		self.name = "bishop"
 		if side == "white":
@@ -54,6 +57,7 @@ class bishop(piece):
 		elif side == "black":
 			self.symbol = "B"
 
+	@cache
 	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
 		squares = board.copy()
 		removed_squares = []
@@ -104,7 +108,7 @@ class bishop(piece):
 
 
 class knight(piece):
-	def __init__(self, side, position, first_move):
+	def __init__(self, side, position, first_move = None):
 		super().__init__(side, position, first_move)
 		self.name = "knight"
 		if side == "white":
@@ -152,7 +156,7 @@ class knight(piece):
 
 
 class rook(piece):
-	def __init__(self, side, position, first_move):
+	def __init__(self, side, position, first_move = None):
 		super().__init__(side, position, first_move)
 		self.name = "rook"
 		if side == "white":
@@ -203,7 +207,7 @@ class rook(piece):
 
 
 class queen(piece):
-	def __init__(self, side, position, first_move):
+	def __init__(self, side, position, first_move = None):
 		super().__init__(side, position, first_move)
 		self.name = "queen"
 		if side == "white":
@@ -255,7 +259,7 @@ class queen(piece):
 
 
 class pawn(piece):
-	def __init__(self, side, position, first_move):
+	def __init__(self, side, position, first_move = None):
 		super().__init__(side, position, first_move)
 		self.name = "pawn"
 		if side == "white":
@@ -329,9 +333,8 @@ class pawn(piece):
 
 		return squares
 
-
 class king(piece):
-	def __init__(self, side, position, first_move):
+	def __init__(self, side, position, first_move = None):
 		super().__init__(side, position, first_move)
 		self.name = "king"
 		if side == "white":
@@ -391,7 +394,7 @@ white_rook_2 = rook("white", [8, 1], True)
 white_queen = queen("white", [4, 1], True)
 white_king = king("white", [5, 1], True)
 white_pawn_1 = pawn("white", [1, 2], True)
-white_pawn_2 = pawn("white", [2, 2], True)
+white_pawn_2 = pawn("white", [2, 7], True)
 white_pawn_3 = pawn("white", [3, 2], True)
 white_pawn_4 = pawn("white", [4, 2], True)
 white_pawn_5 = pawn("white", [5, 2], True)
@@ -414,7 +417,7 @@ black_rook_2 = rook("black", [8, 8], True)
 black_queen = queen("black", [4, 8], True,)
 black_king = king("black", [5, 8], True)
 black_pawn_1 = pawn("black", [1, 7], True)
-black_pawn_2 = pawn("black", [2, 7], True)
+black_pawn_2 = pawn("black", [2, 6], True)##
 black_pawn_3 = pawn("black", [3, 7], True)
 black_pawn_4 = pawn("black", [4, 7], True)
 black_pawn_5 = pawn("black", [5, 7], True)
@@ -431,7 +434,7 @@ black_pieces = [black_rook_1, black_rook_2,
 player1 = player(True, "white", white_pieces, "player1", 1, False)
 player2 = player(False, "black", black_pieces, "player2", 8, False)
 
-
+@cache
 def check(active_player, enemy_player, board):
 	for piece in active_player.pieces:
 		if piece.name == "king":

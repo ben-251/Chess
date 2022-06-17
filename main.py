@@ -1,7 +1,8 @@
 import backend as ext
 import output as out
 import copy
-
+from functools import cache
+#######doesnt register chack when pawn promotes, maybe it doesnt add it to pieces properly
 
 def get_array(stage, valid_squares):
 	valid_coord = False
@@ -34,7 +35,7 @@ def get_selected_piece(active_player, active_positions):
 	while piece_valid == False:  # see extras.txt "attribution"
 		start_position = get_array("start", active_positions)
 		if start_position == "back":
-			return get_valid_piece(active_player, active_positions)
+			return get_selected_piece(active_player, active_positions)
 		selected_piece = ext.find_piece(active_player, start_position)
 
 		piece_valid = True
@@ -189,8 +190,11 @@ def start_game():
 						is_check)
 	return winner, reason
 
-def start():
+def main():
 	print("enter \"help\" to see the help menu.")
 	winner, reason = start_game()
 	print(f"Game over. {winner} by {reason}")
-start()
+
+
+if __name__ == "__main__":
+	main()

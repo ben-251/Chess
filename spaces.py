@@ -9,6 +9,7 @@ def longest(array_names):
 		if len(array_names[i])>maxim:
 			maxim = len(array_names[i])
 	return maxim
+	
 def no_spaces(array_input):
 	'''
 	finds the number of no_spaces that each title should have
@@ -40,6 +41,7 @@ def no_items(all_arrays):
 	for counter in range((len(all_arrays))):
 		num[counter] = (max) - (len(all_arrays[counter]))
 	return num
+
 def blanks(all_arrays):
 	for k in range(len(all_arrays)):
 		for i in range(no_items(all_arrays)[k]):
@@ -52,6 +54,7 @@ def display(array1,array2):
 	for k in range(longest(all_arrays)):
 		string += (str(array1[k])+" "+spaces(array1)[k]+" "+str(array2[k])+"\n")
 	return string
+
 def single(Array1,symbol = None, end = None):
 	string = ""
 	if symbol:

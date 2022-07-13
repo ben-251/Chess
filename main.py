@@ -2,7 +2,6 @@ import backend as ext
 import output as out
 import copy
 from functools import cache
-#######doesnt register chack when pawn promotes, maybe it doesnt add it to pieces properly
 
 def get_array(stage, valid_squares):
 	valid_coord = False

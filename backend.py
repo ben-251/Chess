@@ -46,6 +46,7 @@ class piece:
 			self.first_move = True
 		else:
 			self.first_move = first_move
+		self.just_moved = False
 
 
 class bishop(piece):
@@ -266,8 +267,25 @@ class pawn(piece):
 		elif side == "black":
 			self.symbol = "O"
 
-	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
-		squares = board.copy()
+	def is_en_passant(self, active_player, enemy_player, init_position, side_direction):
+		adj_piece.append(find_piece(enemy_player, [init_position[0]+side_direction,init_position[1]]))
+		
+		if adj_piece == 'PieceNotFoundError':
+			return False			
+		if adj_piece.name != "pawn":
+			return False
+		if not adj_piece.just_moved:
+			return False
+		if active_player.side == "white" and adj_piece.position[1] != 5:
+			return False
+		if active_player.side == "black" and adj_piece.position[1] != 4:
+			return False
+		return True
+
+
+	
+	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board,last_move = None):
+		board_squares = board.copy()
 		removed_squares = []
 
 		active_positions = []
@@ -282,7 +300,7 @@ class pawn(piece):
 		all_positions.extend(enemy_positions)
 		all_positions.extend(active_positions)
 
-		for i in squares:
+		for i in board_squares:
 			delta_x = abs(i[0] - init_position[0])
 			if self.side == "white":
 				delta_y = i[1] - init_position[1]
@@ -305,6 +323,16 @@ class pawn(piece):
 			if i in enemy_positions and (delta_y == 1 and delta_x == 1):
 				if i in removed_squares:
 					removed_squares.remove(i)
+
+			for side_direction in [1.-1]:
+				if self.is_en_passant(active_player,enemy_player,init_position,side_direction):
+					if active_player.side == "white":
+						forward_direction = 1
+					else:
+						forward_direction = -1
+					ep_taking_square = [init_position[0]+side_direction,init_position[1]+forward_direction]
+					if ep_taking_square in removed_squares:
+						removed_squares.remove(ep_taking_square)
 		return removed_squares
 
 	def determine_valid_squares(self, init_position, active_player, enemy_player, board):
@@ -320,8 +348,6 @@ class pawn(piece):
 			ghost_enemy_player = copy.deepcopy(enemy_player)
 			ghost_chosen_piece = find_piece(ghost_active_player, init_position)
 			move(ghost_chosen_piece, i, ghost_enemy_player)
-			if i == [3, 5]:
-				print(end="")
 			is_check = check(ghost_active_player, ghost_enemy_player, board)
 			if is_check:
 				removed_squares.append(i)
@@ -469,16 +495,46 @@ def castle(direction, active_player, enemy_player):
 	rook_piece.position[0] += rook_direction
 	return "castled"
 
+def is_trying_ep(piece,position, enemy_player):
+	if active_player.side == "white":
+		row = 5
+	if active_player.side == "black":
+		row = 4
+
+	if active_player.side == "white":
+		forward_direction = 1
+	elif active_player.side == "black":
+		forward_direction = -1
+
+	for enemy_piece in enemy_player.pieces:
+		if enemy_piece.name != "pawn":
+			return False
+		elif position != [enemy_piece.position[0]+1, enemy_piece.position[1]+forward_direction] and position != [enemy_piece.position[0]-1, enemy_piece.position[1]+forward_direction]:
+			return False
+		elif not enemy_piece.just_moved:
+			return False		
+		elif position != [piece.position[0]+1,piece.position[1]+forward_direction] and position != [piece.position[0]-1,piece.position[1]+forward_direction]:
+			return False
+		else:
+			return True
 
 def move(piece, position, enemy_player):
+	#make the piece that had just moved no longer have just moved
+	for piece in enemy_player.pieces:
+		if piece.just_moved == True:
+			piece.just_moved = False
+			break
+
 	for enemy_piece in enemy_player.pieces:
 		if position == enemy_piece.position:
 			enemy_player.pieces.remove(enemy_piece)
 			break
-
+	
+	###check if the move was an en passant capture too 
 	piece.position = position
 	if piece.first_move == True:
 		piece.first_move = False
+	piece.just_moved = True
 	return "moved"
 
 
@@ -667,3 +723,4 @@ def can_castle(direction, active_player, enemy_player):
 		return False
 
 	return True
+

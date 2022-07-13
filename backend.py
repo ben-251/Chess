@@ -57,7 +57,6 @@ class bishop(piece):
 		elif side == "black":
 			self.symbol = "B"
 
-	@cache
 	def almost_determine_valid_squares(self, init_position, active_player, enemy_player, board):
 		squares = board.copy()
 		removed_squares = []
@@ -394,7 +393,7 @@ white_rook_2 = rook("white", [8, 1], True)
 white_queen = queen("white", [4, 1], True)
 white_king = king("white", [5, 1], True)
 white_pawn_1 = pawn("white", [1, 2], True)
-white_pawn_2 = pawn("white", [2, 7], True)
+white_pawn_2 = pawn("white", [2, 2], True)
 white_pawn_3 = pawn("white", [3, 2], True)
 white_pawn_4 = pawn("white", [4, 2], True)
 white_pawn_5 = pawn("white", [5, 2], True)
@@ -417,7 +416,7 @@ black_rook_2 = rook("black", [8, 8], True)
 black_queen = queen("black", [4, 8], True,)
 black_king = king("black", [5, 8], True)
 black_pawn_1 = pawn("black", [1, 7], True)
-black_pawn_2 = pawn("black", [2, 6], True)##
+black_pawn_2 = pawn("black", [2, 7], True)
 black_pawn_3 = pawn("black", [3, 7], True)
 black_pawn_4 = pawn("black", [4, 7], True)
 black_pawn_5 = pawn("black", [5, 7], True)
@@ -434,7 +433,6 @@ black_pieces = [black_rook_1, black_rook_2,
 player1 = player(True, "white", white_pieces, "player1", 1, False)
 player2 = player(False, "black", black_pieces, "player2", 8, False)
 
-@cache
 def check(active_player, enemy_player, board):
 	for piece in active_player.pieces:
 		if piece.name == "king":

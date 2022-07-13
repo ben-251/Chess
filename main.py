@@ -56,7 +56,7 @@ def verify_piece(active_player, enemy_player, board, selected_piece, can_castle_
 	valid_coords = []
 	for i in valid_squares:
 		valid_coords.append(out.convert_to_letters(i))
-	out.display_squares(selected_piece.name, valid_squares,
+	out.show_valid_options(selected_piece.name, valid_squares,
 						can_castle_short, can_castle_long)
 	if len(valid_squares) == 0 and not can_castle_short and not can_castle_long:
 		piece_valid = False
@@ -122,8 +122,6 @@ def play(active_player, enemy_player, is_check):
 	if not ext.draws(active_player,enemy_player,ext.board.squares) == False:
 		return ext.draws(active_player,enemy_player,ext.board.squares)
 	print(f"{active_player.name} is going now.")
-	if is_check:
-		print("you are in check.")
 	
 	active_positions = []
 	for i in active_player.pieces:
@@ -155,10 +153,7 @@ def play(active_player, enemy_player, is_check):
 	else:
 		print(f"The pawn which was on {out.convert_to_letters(start_position)} is now a {ext.find_piece(active_player, pawn_destination).name} on {out.convert_to_letters(pawn_destination)}")
 
-	is_check = ext.check(active_player, enemy_player, ext.board.squares)
-	out.display(active_player, enemy_player, is_check, ext.board)
 	active_player.just_promoted = False
-
 	#swap
 	if active_player == ext.player1 and enemy_player == ext.player2:
 		active_player = ext.player2
@@ -169,7 +164,9 @@ def play(active_player, enemy_player, is_check):
 	else:
 		raise Exception("Neither player is playing rn????")
 
-	return play(active_player, enemy_player, is_check)
+	is_check = ext.check(active_player, enemy_player, ext.board.squares)
+	out.display_board(active_player, enemy_player, is_check, ext.board)
+	return play(active_player, enemy_player, ext.check(active_player, enemy_player, ext.board.squares))
 
 
 def start_game():
@@ -185,9 +182,9 @@ def start_game():
 		all_pieces.append(i)
 
 	is_check = ext.check(active_player, enemy_player, ext.board.squares)
-	out.display(active_player, enemy_player, is_check, ext.board)
+	out.display_board(active_player, enemy_player, is_check, ext.board)
 	winner, reason = play(active_player, enemy_player,
-						is_check)
+						False) #STARTS OFF NEVER BEING IN CHECK but saves unneccessary computation
 	return winner, reason
 
 def main():

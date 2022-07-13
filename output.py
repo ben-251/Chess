@@ -1,5 +1,12 @@
 import spaces as sp
 import backend as ext
+
+#~~~~COLOUR~~
+import colorama
+Back = colorama.Back
+Fore = colorama.Fore
+Clear = f"{Fore.RESET}{Back.RESET}"
+
 def convert_to_letters(coordinates):
 	letters = ""
 	letters += chr(coordinates[0]+96)
@@ -15,7 +22,7 @@ def convert_to_coordinates(letters):
 	coord.append(int(letters[1]))
 	return coord
 
-def display_squares(piece_name,squares,can_castle_short,can_castle_long):
+def show_valid_options(piece_name,squares,can_castle_short,can_castle_long):
 	if len(squares) == 1:
 		print(f"the square your {piece_name} can move to is {convert_to_letters(squares[0])}.")
 	elif len(squares) == 0:
@@ -24,6 +31,7 @@ def display_squares(piece_name,squares,can_castle_short,can_castle_long):
 		print(f"your {piece_name} can go to", end = " ")
 		for i in range(len(squares)):
 			square = convert_to_letters(squares[i])
+
 			if i == len(squares)-1:
 				print(square,end = ".\n")
 			elif i == (len(squares)-2):
@@ -39,7 +47,7 @@ def display_squares(piece_name,squares,can_castle_short,can_castle_long):
 	if can_castle_short:
 		print("You can castle short with \"0-0\"")
 
-def display(active_player, enemy_player, is_check,board):
+def display_board(active_player, enemy_player, is_check,board):
 	active_pieces = []
 	enemy_pieces = []
 	for i in active_player.pieces:
@@ -53,7 +61,7 @@ def display(active_player, enemy_player, is_check,board):
 			king_piece = piece
 			init_symbol = king_piece.symbol
 	if is_check:
-		king_piece.symbol = "+"
+		king_piece.symbol = f"{Fore.BLACK}{Back.RED}{king_piece.symbol}{Clear}"
 
 	active_positions = []
 	enemy_positions = []
@@ -86,14 +94,14 @@ def display(active_player, enemy_player, is_check,board):
 				is_there = False
 
 			if (x % 2 == 0 and y % 2 == 0) or (x % 2 == 1 and y % 2 == 1):
-				color = "-----"
+				color = f"{Fore.WHITE}{Back.BLACK}"
 			else:
-				color = "     "
+				color = f"{Fore.BLACK}{Back.WHITE}"
 			
 			if not is_there:
-				symbol = color[0]
+				symbol = f"{color} {Clear}"
 			else:
-				symbol = ext.find_piece(player_with_piece,[x,y]).symbol
+				symbol = f"{color}{ext.find_piece(player_with_piece,[x,y]).symbol}{Clear}"
 			
 			print(f"|{symbol}", end="")
 		print("|") 

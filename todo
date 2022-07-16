@@ -1,14 +1,14 @@
 Now ~ 
-• en passant
+• test with multiple real games, should in theory be ready for nearly every single game 
 
 Soon ~ 
-• test with multiple real games, should in theory be ready for nearly every single game 
 • clean up redundant code where possible
 
 LaTeR ~
-make the forward_direction thing a part of the class
+make the forward_direction thing a part of the class (maybe)
 
 Completed ~
+• en passant
 • castling
 • pawn promotions
 • fancy print statemtents (like "the rook can go to e4, e5, and e6")

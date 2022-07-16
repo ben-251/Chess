@@ -38,7 +38,7 @@ class board_class:
 board = board_class(1, 8)
 board.resize(8,8)
 
-class piece:
+class active_piece:
 	def __init__(self, side, position, first_move = None):
 		self.side: str = side
 		self.position: list = position
@@ -49,7 +49,7 @@ class piece:
 		self.just_moved = False
 
 
-class bishop(piece):
+class bishop(active_piece):
 	def __init__(self, side, position, first_move = None): 
 		super().__init__(side, position, first_move)
 		self.name = "bishop"
@@ -107,7 +107,7 @@ class bishop(piece):
 		return squares
 
 
-class knight(piece):
+class knight(active_piece):
 	def __init__(self, side, position, first_move = None):
 		super().__init__(side, position, first_move)
 		self.name = "knight"
@@ -155,7 +155,7 @@ class knight(piece):
 		return squares
 
 
-class rook(piece):
+class rook(active_piece):
 	def __init__(self, side, position, first_move = None):
 		super().__init__(side, position, first_move)
 		self.name = "rook"
@@ -206,7 +206,7 @@ class rook(piece):
 		return squares
 
 
-class queen(piece):
+class queen(active_piece):
 	def __init__(self, side, position, first_move = None):
 		super().__init__(side, position, first_move)
 		self.name = "queen"
@@ -258,7 +258,7 @@ class queen(piece):
 		return squares
 
 
-class pawn(piece):
+class pawn(active_piece):
 	def __init__(self, side, position, first_move = None):
 		super().__init__(side, position, first_move)
 		self.name = "pawn"
@@ -324,7 +324,7 @@ class pawn(piece):
 				if i in removed_squares:
 					removed_squares.remove(i)
 
-			for side_direction in [1.-1]:
+			for side_direction in [1,-1]:
 				if self.is_en_passant(active_player,enemy_player,init_position,side_direction):
 					if active_player.side == "white":
 						forward_direction = 1
@@ -358,7 +358,7 @@ class pawn(piece):
 
 		return squares
 
-class king(piece):
+class king(active_piece):
 	def __init__(self, side, position, first_move = None):
 		super().__init__(side, position, first_move)
 		self.name = "king"
@@ -495,49 +495,52 @@ def castle(direction, active_player, enemy_player):
 	rook_piece.position[0] += rook_direction
 	return "castled"
 
-def is_trying_ep(piece,position, enemy_player,forward_direction):
-	if enemy_player.side == "white":
-		row = 5
-	if enemy_player.side == "black":
-		row = 4
+def is_trying_ep(active_piece,enemy_piece,position, enemy_player,forward_direction):
+	if enemy_piece == "PieceNotFoundError":
+		return False
 
-	for enemy_piece in enemy_player.pieces:
-		if enemy_piece.name != "pawn":
-			return False
-		elif position != [enemy_piece.position[0]+1, enemy_piece.position[1]+forward_direction] and position != [enemy_piece.position[0]-1, enemy_piece.position[1]+forward_direction]:
-			return False
-		elif not enemy_piece.just_moved:
-			return False		
-		elif position != [piece.position[0]+1,piece.position[1]+forward_direction] and position != [piece.position[0]-1,piece.position[1]+forward_direction]:
-			return False
-		else:
-			return True
+	if active_piece.side == "white":
+		row = 5
+	if active_piece.side == "black":
+		row = 4
+	capturing_square = [enemy_piece.position[0], enemy_piece.position[1]+forward_direction]
+	if enemy_piece.name != "pawn":
+		return False
+	elif position != capturing_square:
+		return False
+	elif not enemy_piece.just_moved:
+		return False
+	elif active_piece.position[1] != row:
+		return False
+	else:
+		return True
 
 def move(piece, position, enemy_player):
-	#make the piece that had just moved no longer have just moved
-	for piece in enemy_player.pieces:
-		if piece.just_moved == True:
-			piece.just_moved = False
-			break
-
-	for enemy_piece in enemy_player.pieces:
-		if position == enemy_piece.position:
-			enemy_player.pieces.remove(enemy_piece)
-			break
-	
-	###check if the move was an en passant capture too 
 	if enemy_player.side == "white":
 		forward_direction = -1
 	elif enemy_player.side == "black":
 		forward_direction = 1
 
-	if is_trying_ep(piece,position, enemy_player,forward_direction):
-		enemy_player.pieces.remove(find_piece(enemy_player, [position[0],position[1]-forward_direction]))
+	# for enemy_piece in enemy_player.pieces:
+	# 	if position == [enemy_piece.position[0],enemy_piece.position[1]]:
+	# 		enemy_player.pieces.remove(enemy_piece)
+	# 		break
+	
+	###check if the move was an en passant capture too 
+	enemy_piece = find_piece(enemy_player, [position[0],position[1]-forward_direction])
+	if is_trying_ep(piece, enemy_piece, position, enemy_player, forward_direction):
+		enemy_player.pieces.remove(enemy_piece)
 
 	piece.position = position
 	if piece.first_move == True:
 		piece.first_move = False
 	piece.just_moved = True
+
+	#make the piece that had just moved no longer have just moved
+	for enemy_piece in enemy_player.pieces:
+		if enemy_piece.just_moved == True:
+			enemy_piece.just_moved = False
+			break
 	return "moved"
 
 

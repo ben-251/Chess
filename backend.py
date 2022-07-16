@@ -268,7 +268,7 @@ class pawn(piece):
 			self.symbol = "O"
 
 	def is_en_passant(self, active_player, enemy_player, init_position, side_direction):
-		adj_piece.append(find_piece(enemy_player, [init_position[0]+side_direction,init_position[1]]))
+		adj_piece = (find_piece(enemy_player, [init_position[0]+side_direction,init_position[1]]))
 		
 		if adj_piece == 'PieceNotFoundError':
 			return False			
@@ -443,7 +443,7 @@ black_queen = queen("black", [4, 8], True,)
 black_king = king("black", [5, 8], True)
 black_pawn_1 = pawn("black", [1, 7], True)
 black_pawn_2 = pawn("black", [2, 7], True)
-black_pawn_3 = pawn("black", [3, 7], True)
+black_pawn_3 = pawn("black", [3, 4], True)
 black_pawn_4 = pawn("black", [4, 7], True)
 black_pawn_5 = pawn("black", [5, 7], True)
 black_pawn_6 = pawn("black", [6, 7], True)
@@ -495,16 +495,11 @@ def castle(direction, active_player, enemy_player):
 	rook_piece.position[0] += rook_direction
 	return "castled"
 
-def is_trying_ep(piece,position, enemy_player):
-	if active_player.side == "white":
+def is_trying_ep(piece,position, enemy_player,forward_direction):
+	if enemy_player.side == "white":
 		row = 5
-	if active_player.side == "black":
+	if enemy_player.side == "black":
 		row = 4
-
-	if active_player.side == "white":
-		forward_direction = 1
-	elif active_player.side == "black":
-		forward_direction = -1
 
 	for enemy_piece in enemy_player.pieces:
 		if enemy_piece.name != "pawn":
@@ -531,6 +526,14 @@ def move(piece, position, enemy_player):
 			break
 	
 	###check if the move was an en passant capture too 
+	if enemy_player.side == "white":
+		forward_direction = -1
+	elif enemy_player.side == "black":
+		forward_direction = 1
+
+	if is_trying_ep(piece,position, enemy_player,forward_direction):
+		enemy_player.pieces.remove(find_piece(enemy_player, [position[0],position[1]-forward_direction]))
+
 	piece.position = position
 	if piece.first_move == True:
 		piece.first_move = False

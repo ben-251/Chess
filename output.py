@@ -67,9 +67,11 @@ def display_board(active_player, enemy_player, is_check,board):
 	enemy_positions = []
 
 	for i in active_player.pieces:
-		active_positions.append(i.position)
+		if i.alive:
+			active_positions.append(i.position)
 	for i in enemy_player.pieces:
-		enemy_positions.append(i.position)
+		if i.alive:
+			enemy_positions.append(i.position)
 
 	print("\n  |",end = "")
 	for i in range(board.x-1):

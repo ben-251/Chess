@@ -38,7 +38,7 @@ def get_selected_piece(active_player, active_positions):
 		selected_piece = ext.find_piece(active_player, start_position)
 
 		piece_valid = True
-		if selected_piece == "PieceNotFoundError":
+		if selected_piece == -1:
 			piece_valid = False
 			print("Try Again. NO piece here.")
 			continue
@@ -48,7 +48,8 @@ def verify_piece(active_player, enemy_player, board, selected_piece, can_castle_
 	piece_valid = True
 	active_positions = []
 	for i in active_player.pieces:
-		active_positions.append(i.position)
+		if i.alive:
+			active_positions.append(i.position)
 
 	valid_squares = selected_piece.determine_valid_squares(selected_piece.position,
 															active_player, enemy_player, board)
@@ -104,9 +105,9 @@ def play(active_player, enemy_player, is_check):
 	all_moves = []
 
 	for i in active_player.pieces:
-		all_moves.append(i.determine_valid_squares(
+		if i.alive:
+			all_moves.append(i.determine_valid_squares(
 			i.position, active_player, enemy_player, ext.board.squares))
-
 	total_moves = 0
 	for i in all_moves:
 		total_moves += len(i)
@@ -130,8 +131,8 @@ def play(active_player, enemy_player, is_check):
 	for i in enemy_player.pieces:
 		enemy_positions.append(i.position)
 
-	all_positions = enemy_positions.copy()
-	all_positions.extend(active_positions)
+	# all_positions = enemy_positions.copy()
+	# all_positions.extend(active_positions)
 
 	selected_piece, start_position = get_selected_piece(active_player, active_positions)
 	valid_squares = verify_piece(active_player, enemy_player, ext.board.squares, selected_piece, can_castle_short, can_castle_long)

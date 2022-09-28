@@ -447,45 +447,46 @@ class king(active_piece):
 
 piece_classes = [bishop,knight,pawn,rook,queen,king]
 piece_names = ["bishop", "knight", "king", "queen", "rook"]
-white_bishop_1 = bishop("white", [2, 2], False)
+
+white_bishop_1 = bishop("white", [3, 1])
 white_bishop_2 = bishop("white", [6, 1])
-white_knight_1 = knight("white", [3, 3], False)
+white_knight_1 = knight("white", [2, 1])
 white_knight_2 = knight("white", [7, 1])
 white_rook_1 = rook("white", [1, 1])
 white_rook_2 = rook("white", [8, 1])
-white_queen = queen("white", [2, 5], False)
+white_queen = queen("white", [4, 1])
 white_king = king("white", [5, 1])
 white_pawn_1 = pawn("white", [1, 2])
-white_pawn_2 = pawn("white", [2, 3],False)
+white_pawn_2 = pawn("white", [2, 2])
 white_pawn_3 = pawn("white", [3, 2])
 white_pawn_4 = pawn("white", [4, 2])
-white_pawn_5 = pawn("white", [5, 2], alive=False)
+white_pawn_5 = pawn("white", [5, 2])
 white_pawn_6 = pawn("white", [6, 2])
 white_pawn_7 = pawn("white", [7, 2])
 white_pawn_8 = pawn("white", [8, 2])
+
+black_bishop_1 = bishop("black", [3, 8])
+black_bishop_2 = bishop("black", [6, 8])
+black_knight_1 = knight("black", [2, 8])
+black_knight_2 = knight("black", [7, 8])
+black_rook_1 = rook("black", [1, 8])
+black_rook_2 = rook("black", [8, 8])
+black_queen = queen("black", [4, 8])
+black_king = king("black", [5, 8])
+black_pawn_1 = pawn("black", [1, 7])
+black_pawn_2 = pawn("black", [2, 7])
+black_pawn_3 = pawn("black", [3, 7])
+black_pawn_4 = pawn("black", [4, 7])
+black_pawn_5 = pawn("black", [5, 7])
+black_pawn_6 = pawn("black", [6, 7])
+black_pawn_7 = pawn("black", [7, 7])
+black_pawn_8 = pawn("black", [8, 7])
 
 white_pieces = [white_pawn_1,
 				white_pawn_2, white_pawn_3, white_pawn_4, white_pawn_5,
 				white_pawn_6, white_pawn_7, white_pawn_8, white_bishop_1, white_bishop_2,
 				white_knight_1, white_knight_2,  white_rook_1,
 				white_rook_2, white_king, white_queen]
-
-black_bishop_1 = bishop("black", [6, 5], False)
-black_bishop_2 = bishop("black", [4, 6], False)
-black_knight_1 = knight("black", [2, 8])
-black_knight_2 = knight("black", [6, 6], False)
-black_rook_1 = rook("black", [1, 8])
-black_rook_2 = rook("black", [8, 8])
-black_queen = queen("black", [4, 7], False)
-black_king = king("black", [5, 8])
-black_pawn_1 = pawn("black", [1, 7])
-black_pawn_2 = pawn("black", [2, 7])
-black_pawn_3 = pawn("black", [4, 5], False)
-black_pawn_4 = pawn("black", [4, 5], False,False)
-black_pawn_5 = pawn("black", [5, 6], False)
-black_pawn_6 = pawn("black", [6, 7])
-black_pawn_7 = pawn("black", [7, 7])
-black_pawn_8 = pawn("black", [8, 7])
 
 black_pieces = [black_rook_1, black_rook_2,
 				black_bishop_1, black_bishop_2, black_knight_1,
